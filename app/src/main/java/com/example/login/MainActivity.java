@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         btningresar=(Button) findViewById(R.id.btningresar);
         txtregistro=(TextView) findViewById(R.id.txtregistro);
 
-        txtmsj.setText("Mensaje desde la capa controlador");
+        txtmsj.setText("Bienvenido a la Aplicación SFDS1");
 
         btningresar.setOnClickListener(new View.OnClickListener() {
             @Override
