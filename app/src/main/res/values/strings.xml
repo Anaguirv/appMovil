@@ -1,4 +1,5 @@
 <resources>
-    <string name="app_name">Login</string>
-    <string name="btn_ingresar">Ingresar</string>
+    <string name="app_name">SMCL</string>
+    <string name="btn_ingresar">INGRESAR</string>
+    <string name="btn_registrar">REGISTRAR</string>
 </resources>
