@@ -5,16 +5,18 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#27536B"
+    android:background="#000000"
     tools:context=".Splash">
 
-  <ImageView
-      android:id="@+id/imgsplashestatico"
-      android:layout_width="439dp"
-      android:layout_height="418dp"
+  <com.airbnb.lottie.LottieAnimationView
+      android:layout_width="579dp"
+      android:layout_height="856dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:srcCompat="@drawable/icono" />
+      app:layout_constraintVertical_bias="0.0"
+      app:lottie_autoPlay="true"
+      app:lottie_fileName="Splash.json"
+      app:lottie_loop="true" />
 </androidx.constraintlayout.widget.ConstraintLayout>

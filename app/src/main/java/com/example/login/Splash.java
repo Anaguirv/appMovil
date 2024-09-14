@@ -28,15 +28,16 @@ public class Splash extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        //
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-            // Cargamos el Activity principal
+            // Cargamos el Activity Splash
                 Intent i = new Intent(Splash.this, MainActivity.class);
                 startActivity(i);
-                // Cerramos el Activity Principal que en este caso es el MainActivity
+            // Cerramos el Activity Splash para iniciar MainActivity
                 finish();
             }
-        }, 2000); // Le damos el Tiempo de espera que esta en milisegundos.
+        }, 4000); // Le damos el Tiempo de espera que esta en milisegundos.
     }
 }

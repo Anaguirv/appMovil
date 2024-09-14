@@ -2,4 +2,6 @@
     <string name="app_name">SMCL</string>
     <string name="btn_ingresar">INGRESAR</string>
     <string name="btn_registrar">REGISTRAR</string>
+    <string name="btn_enviar">ENVIAR</string>
+
 </resources>
