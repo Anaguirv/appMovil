@@ -8,17 +8,6 @@
     tools:context=".Dashboard">
 
     <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="725dp"
-        android:layout_height="908dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.61"
-        app:srcCompat="@drawable/wallpaper" />
-
-    <ImageView
         android:id="@+id/imglogo"
         android:layout_width="160dp"
         android:layout_height="140dp"
@@ -35,7 +24,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Bienvenido"
-        android:textColor="#DAC4FF"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -49,7 +37,6 @@
         android:layout_marginTop="68dp"
         android:layout_marginEnd="84dp"
         android:text="CRUD usuarios"
-        android:textColor="#eee"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -84,7 +71,6 @@
         android:layout_marginTop="76dp"
         android:layout_marginEnd="56dp"
         android:text="Mostrar Sensores"
-        android:textColor="#eee"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtCRUD" />
@@ -96,7 +82,6 @@
         android:layout_marginTop="84dp"
         android:layout_marginEnd="72dp"
         android:text="Acerca de la App"
-        android:textColor="#eee"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtSensores" />

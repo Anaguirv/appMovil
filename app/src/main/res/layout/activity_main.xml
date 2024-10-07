@@ -8,6 +8,16 @@
     tools:context=".MainActivity">
 
     <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="510dp"
+        android:layout_height="815dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/estrellas" />
+
+    <ImageView
         android:id="@+id/imglogo"
         android:layout_width="160dp"
         android:layout_height="142dp"
@@ -24,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:textAlignment="center"
+        android:textColor="#eee"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -39,6 +50,8 @@
         android:hint="correo@correo.cl"
         android:inputType="textEmailAddress"
         android:textAlignment="center"
+        android:textColor="#eee"
+        android:textColorHint="#ADADAD"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtmensaje" />
@@ -52,6 +65,8 @@
         android:hint="Ingrese contraseña"
         android:inputType="textPassword"
         android:textAlignment="center"
+        android:textColor="#eee"
+        android:textColorHint="#ADADAD"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtuser" />
@@ -62,6 +77,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="¿Olvide mi contraseña?"
+        android:textColor="#eee"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -88,6 +104,7 @@
         android:layout_marginTop="36dp"
         android:rotationX="0"
         android:text="Deseo Registrarme"
+        android:textColor="#eee"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
