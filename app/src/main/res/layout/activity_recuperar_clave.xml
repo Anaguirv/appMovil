@@ -8,7 +8,7 @@
     tools:context=".RecuperarClave">
 
     <Button
-        android:id="@+id/btnregistro"
+        android:id="@+id/btnRegistrar"
         android:layout_width="208dp"
         android:layout_height="58dp"
         android:layout_marginTop="32dp"
@@ -19,10 +19,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtuserregistro" />
+        app:layout_constraintTop_toBottomOf="@+id/usuarioRegistro" />
 
     <EditText
-        android:id="@+id/txtuserregistro"
+        android:id="@+id/usuarioRegistro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="44dp"
@@ -60,6 +60,8 @@
 
     <EditText
         android:id="@+id/editTextNumber5"
+        android:visibility="gone"
+        android:maxLength="1"
         android:layout_width="45dp"
         android:layout_height="60dp"
         android:layout_marginTop="60dp"
@@ -68,10 +70,12 @@
         android:inputType="number"
         android:textAlignment="center"
         app:layout_constraintEnd_toStartOf="@+id/editTextNumber6"
-        app:layout_constraintTop_toBottomOf="@+id/btnregistro" />
+        app:layout_constraintTop_toBottomOf="@+id/btnRegistrar" />
 
     <EditText
+        android:maxLength="1"
         android:id="@+id/editTextNumber4"
+        android:visibility="gone"
         android:layout_width="45dp"
         android:layout_height="60dp"
         android:layout_marginTop="60dp"
@@ -80,9 +84,11 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toStartOf="@+id/editTextNumber5"
         app:layout_constraintStart_toEndOf="@+id/editTextNumber3"
-        app:layout_constraintTop_toBottomOf="@+id/btnregistro" />
+        app:layout_constraintTop_toBottomOf="@+id/btnRegistrar" />
 
     <EditText
+        android:visibility="gone"
+        android:maxLength="1"
         android:id="@+id/editTextNumber7"
         android:layout_width="45dp"
         android:layout_height="60dp"
@@ -92,10 +98,12 @@
         android:inputType="number"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnregistro" />
+        app:layout_constraintTop_toBottomOf="@+id/btnRegistrar" />
 
     <EditText
+        android:maxLength="1"
         android:id="@+id/editTextNumber3"
+        android:visibility="gone"
         android:layout_width="45dp"
         android:layout_height="60dp"
         android:layout_marginTop="60dp"
@@ -105,10 +113,12 @@
         app:layout_constraintEnd_toStartOf="@+id/editTextNumber4"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnregistro" />
+        app:layout_constraintTop_toBottomOf="@+id/btnRegistrar" />
 
     <EditText
+        android:maxLength="1"
         android:id="@+id/editTextNumber6"
+        android:visibility="gone"
         android:layout_width="45dp"
         android:layout_height="60dp"
         android:layout_marginTop="60dp"
@@ -117,10 +127,11 @@
         android:inputType="number"
         android:textAlignment="center"
         app:layout_constraintEnd_toStartOf="@+id/editTextNumber7"
-        app:layout_constraintTop_toBottomOf="@+id/btnregistro" />
+        app:layout_constraintTop_toBottomOf="@+id/btnRegistrar" />
 
     <TextView
         android:id="@+id/textView2"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -132,6 +143,7 @@
 
     <TextView
         android:id="@+id/textView3"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

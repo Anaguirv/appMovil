@@ -5,6 +5,8 @@
     android:id="@+id/dashboard"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="false"
     android:textAlignment="center"
     tools:context=".Registro">
 
@@ -20,7 +22,7 @@
         app:srcCompat="@drawable/icono" />
 
     <EditText
-        android:id="@+id/txtnombre"
+        android:id="@+id/nombreRegistro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="44dp"
@@ -33,7 +35,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tituloCrearClave" />
 
     <Button
-        android:id="@+id/btnregistro"
+        android:id="@+id/btnRegistrar"
         android:layout_width="208dp"
         android:layout_height="58dp"
         android:layout_marginTop="36dp"
@@ -44,10 +46,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtclaverepetir" />
+        app:layout_constraintTop_toBottomOf="@+id/claveRepetirRegistro" />
 
     <EditText
-        android:id="@+id/txtclaverepetir"
+        android:id="@+id/claveRepetirRegistro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -57,10 +59,10 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtclaveregistro" />
+        app:layout_constraintTop_toBottomOf="@+id/claveRegistro" />
 
     <EditText
-        android:id="@+id/txtclaveregistro"
+        android:id="@+id/claveRegistro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -71,24 +73,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtnacimiento" />
+        app:layout_constraintTop_toBottomOf="@+id/nacimientoRegistro" />
 
     <EditText
-        android:id="@+id/txtnacimiento"
+        android:id="@+id/nacimientoRegistro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
+        android:clickable="true"
         android:ems="10"
-        android:hint="Fecha de nacimiento"
+        android:focusable="false"
+        android:hint="Fecha nacimiento"
         android:inputType="date"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtuserregistro" />
+        app:layout_constraintTop_toBottomOf="@+id/usuarioRegistro" />
 
     <EditText
-        android:id="@+id/txtuserregistro"
+        android:id="@+id/usuarioRegistro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -98,7 +102,7 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtnombre" />
+        app:layout_constraintTop_toBottomOf="@+id/nombreRegistro" />
 
     <TextView
         android:id="@+id/tituloCrearClave"

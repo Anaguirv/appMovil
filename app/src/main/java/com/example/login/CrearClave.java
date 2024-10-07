@@ -90,7 +90,7 @@ public class CrearClave extends AppCompatActivity {
     // Método para validar que la clave cumpla con los requisitos
     private boolean esClaveValida(String clave) {
         // Expresión regular para una clave robusta
-        String passwordPattern = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$";
+        String passwordPattern = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+=!_-])(?=\\S+$).{8,}$";
         Pattern pattern = Pattern.compile(passwordPattern);
         Matcher matcher = pattern.matcher(clave);
         return matcher.matches();

@@ -20,7 +20,7 @@ public class RecuperarClave extends AppCompatActivity {
 
     private EditText txtUserRegistro;
     private Button btnRegistro;
-    private TextView textViewTimer;
+    private TextView textViewTimer, textViewMensajeTiempo;
     private String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"; // Patrón de correo electrónico
     private CountDownTimer countDownTimer;
     private boolean isTimerRunning = false;
@@ -42,9 +42,10 @@ public class RecuperarClave extends AppCompatActivity {
         });
 
         // Vincular la vista con el controlador
-        txtUserRegistro = findViewById(R.id.txtuserregistro);
-        btnRegistro = findViewById(R.id.btnregistro);
+        txtUserRegistro = findViewById(R.id.usuarioRegistro);
+        btnRegistro = findViewById(R.id.btnRegistrar);
         textViewTimer = findViewById(R.id.textView3); // TextView para la cuenta regresiva
+        textViewMensajeTiempo = findViewById(R.id.textView2);
         // Vincular los EditTexts de los inputs de números
         editText3 = findViewById(R.id.editTextNumber3);
         editText4 = findViewById(R.id.editTextNumber4);
@@ -80,6 +81,14 @@ public class RecuperarClave extends AppCompatActivity {
                 } else {
                     // Iniciar la cuenta regresiva si el correo es válido y no se está ejecutando ya
                     if (!isTimerRunning) {
+                        editText3.setVisibility(View.VISIBLE);
+                        editText4.setVisibility(View.VISIBLE);
+                        editText5.setVisibility(View.VISIBLE);
+                        editText6.setVisibility(View.VISIBLE);
+                        editText7.setVisibility(View.VISIBLE);
+                        textViewMensajeTiempo.setVisibility(View.VISIBLE);
+                        textViewTimer.setVisibility(View.VISIBLE);
+
                         iniciarCuentaRegresiva(tiempoInicial);
                         Toast.makeText(RecuperarClave.this, "Código enviado al correo", Toast.LENGTH_LONG).show();
                     }
@@ -131,11 +140,26 @@ public class RecuperarClave extends AppCompatActivity {
                     } else {
                         // Mostrar un mensaje de error si el código no es válido
                         Toast.makeText(RecuperarClave.this, "Código incorrecto", Toast.LENGTH_LONG).show();
+
+                        // Limpiar todos los campos de texto
+                        limpiarCampos();
                     }
                 }
                 return false;
             }
         });
+    }
+
+    // Método para limpiar todos los campos de texto
+    private void limpiarCampos() {
+        editText3.setText("");
+        editText4.setText("");
+        editText5.setText("");
+        editText6.setText("");
+        editText7.setText("");
+
+        // Regresar el foco al primer campo
+        editText3.requestFocus();
     }
 
     // Método para cargar el Activity para crear nueva clave
