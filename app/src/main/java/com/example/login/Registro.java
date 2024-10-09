@@ -2,7 +2,9 @@ package com.example.login;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
@@ -27,10 +29,11 @@ public class Registro extends AppCompatActivity {
 
     // 1.- Atributos
     //Declaración de variables
-    private EditText nombreRegistro, usuarioRegistro, nacimientoRegistro,
+    private EditText nombreRegistro, apellidoRegistro, usuarioRegistro, nacimientoRegistro,
             claveRegistro, claveRepetirRegistro;
     private Button btnRegistrar;
     private Calendar calendario; // Para manejar la fecha seleccionada
+
 
     // Expresiones regulares
     private String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
@@ -50,6 +53,7 @@ public class Registro extends AppCompatActivity {
 
         // 2. Crear relación entre capa vista y controlador
         nombreRegistro=(EditText) findViewById(R.id.nombreRegistro);
+        apellidoRegistro=(EditText)findViewById(R.id.apellidoRegistro);
         usuarioRegistro=(EditText) findViewById(R.id.usuarioRegistro);
         nacimientoRegistro=(EditText) findViewById(R.id.nacimientoRegistro);
         claveRegistro=(EditText) findViewById(R.id.claveRegistro);
@@ -97,13 +101,14 @@ public class Registro extends AppCompatActivity {
     private void registrarUsuario() {
         // 4.Tomar datos ingresados en la vista con método get()
         String nombre = nombreRegistro.getText().toString();
+        String apellido = apellidoRegistro.getText().toString();
         String usuario = usuarioRegistro.getText().toString();
         String nacimiento = nacimientoRegistro.getText().toString();
         String clave = claveRegistro.getText().toString();
         String claveRepetir = claveRepetirRegistro.getText().toString();
 
         //5. Validaciones usando patrones
-        if (TextUtils.isEmpty(nombre) || TextUtils.isEmpty(usuario) ||
+        if (TextUtils.isEmpty(nombre) || TextUtils.isEmpty(apellido) || TextUtils.isEmpty(usuario) ||
                 TextUtils.isEmpty(nacimiento) || TextUtils.isEmpty(clave) ||
                 TextUtils.isEmpty(claveRepetir)) {
             Toast.makeText(this, "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show();
@@ -131,6 +136,7 @@ public class Registro extends AppCompatActivity {
         }
 
         // 6. Si pasa todas las validaciones
+        guardar(nombre, apellido, usuario, clave);
         Toast.makeText(this, "Registro exitoso", Toast.LENGTH_LONG).show();
 
         // 7. Redirigir a MainActivity
@@ -172,5 +178,27 @@ public class Registro extends AppCompatActivity {
             return false;
         }
     }
+
+    public void guardar(String nom, String ape, String mai, String cla)
+    {
+        ConexionDbHelper helper = new ConexionDbHelper(this, "APPSQLITE", null, 1);
+        SQLiteDatabase db = helper.getReadableDatabase();
+        try{
+            ContentValues datos=new ContentValues();
+            datos.put("Nombre",nom);
+            datos.put("Apellido",ape);
+            datos.put("Email",mai);
+            datos.put("Clave",cla);
+            db.insert("USUARIOS",null,datos);
+            Toast.makeText(this,"Datos Ingresados Sin Problemas",
+                    Toast.LENGTH_LONG).show();
+        }catch (Exception e){
+            Toast.makeText(this,"Error"+e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+
+
 
 }

@@ -13,7 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class Dashboard extends AppCompatActivity {
     // Atributos
-    private TextView txtSensores;
+    private TextView txtSensores, txtUsuarios;
 
     //Métodos
     @Override
@@ -29,13 +29,23 @@ public class Dashboard extends AppCompatActivity {
 
         //Crear relación entre parte grafica y logica
         txtSensores = (TextView) findViewById(R.id.txtSensores);
+        txtUsuarios = (TextView) findViewById(R.id.txtUsuarios);
 
-        //Confirurar escuchador para sensore
+        //Confirurar escuchador para ir a Activity sensores
         txtSensores.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent ventana_sensores = new Intent(Dashboard.this, MonitoreoSensores.class);
                 startActivity(ventana_sensores);
+            }
+        });
+
+        //Configurar escuchador para ir a Activity Usuarios
+        txtUsuarios.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent ventana_usuarios = new Intent(Dashboard.this, ListadoUsuarios.class);
+                startActivity(ventana_usuarios);
             }
         });
     }

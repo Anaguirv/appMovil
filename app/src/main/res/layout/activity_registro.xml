@@ -12,11 +12,11 @@
 
     <ImageView
         android:id="@+id/imglogo"
-        android:layout_width="160dp"
-        android:layout_height="140dp"
-        android:layout_marginTop="40dp"
+        android:layout_width="131dp"
+        android:layout_height="110dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/icono" />
@@ -38,13 +38,13 @@
         android:id="@+id/btnRegistrar"
         android:layout_width="208dp"
         android:layout_height="58dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="48dp"
         android:backgroundTint="@color/botonIngreso"
         android:text="@string/btn_registrar"
         android:textColor="#eee"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.512"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/claveRepetirRegistro" />
 
@@ -79,7 +79,7 @@
         android:id="@+id/nacimientoRegistro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:clickable="true"
         android:ems="10"
         android:focusable="false"
@@ -87,7 +87,7 @@
         android:inputType="date"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.489"
+        app:layout_constraintHorizontal_bias="0.517"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/usuarioRegistro" />
 
@@ -101,18 +101,33 @@
         android:inputType="textEmailAddress"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nombreRegistro" />
+        app:layout_constraintTop_toBottomOf="@+id/apellidoRegistro" />
 
     <TextView
         android:id="@+id/tituloCrearClave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="12dp"
         android:text="REGISTRO DE USUARIO"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imglogo" />
+
+    <EditText
+        android:id="@+id/apellidoRegistro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="Ingrese Apellido"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nombreRegistro" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

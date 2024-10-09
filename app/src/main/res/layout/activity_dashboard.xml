@@ -5,7 +5,8 @@
     android:id="@+id/dashboard"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Dashboard">
+    tools:context=".Dashboard"
+    android:background="#eee">
 
     <ImageView
         android:id="@+id/imglogo"
@@ -16,7 +17,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/icono" />
+        app:srcCompat="@drawable/astronomy"/>
 
     <TextView
         android:id="@+id/textView"
@@ -31,12 +32,12 @@
         app:layout_constraintTop_toBottomOf="@+id/imglogo" />
 
     <TextView
-        android:id="@+id/txtCRUD"
+        android:id="@+id/txtUsuarios"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
-        android:layout_marginEnd="84dp"
-        android:text="CRUD usuarios"
+        android:layout_marginTop="76dp"
+        android:layout_marginEnd="148dp"
+        android:text="Usuarios"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -45,24 +46,25 @@
         android:id="@+id/imageView2"
         android:layout_width="66dp"
         android:layout_height="63dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="48dp"
         app:layout_constraintEnd_toStartOf="@+id/txtSensores"
-        app:layout_constraintHorizontal_bias="0.82"
+        app:layout_constraintHorizontal_bias="0.8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView7"
-        app:srcCompat="@drawable/comet" />
+        app:srcCompat="@drawable/sensor"/>
+
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="55dp"
-        android:layout_height="51dp"
+        android:layout_width="66dp"
+        android:layout_height="63dp"
         android:layout_marginStart="36dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="36dp"
         app:layout_constraintEnd_toStartOf="@+id/txtAcerca"
-        app:layout_constraintHorizontal_bias="0.71"
+        app:layout_constraintHorizontal_bias="0.676"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        app:srcCompat="@android:drawable/ic_dialog_info" />
+        app:srcCompat="@drawable/book"/>
 
     <TextView
         android:id="@+id/txtSensores"
@@ -73,28 +75,29 @@
         android:text="Mostrar Sensores"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtCRUD" />
+        app:layout_constraintTop_toBottomOf="@+id/txtUsuarios" />
 
     <TextView
         android:id="@+id/txtAcerca"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
-        android:layout_marginEnd="72dp"
-        android:text="Acerca de la App"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="44dp"
+        android:text="Registrar Medición"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtSensores" />
 
     <ImageView
         android:id="@+id/imageView7"
-        android:layout_width="77dp"
-        android:layout_height="74dp"
-        android:layout_marginTop="48dp"
-        app:layout_constraintEnd_toStartOf="@+id/txtCRUD"
-        app:layout_constraintHorizontal_bias="0.788"
+        android:layout_width="66dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="64dp"
+        app:layout_constraintEnd_toStartOf="@+id/txtUsuarios"
+        app:layout_constraintHorizontal_bias="0.776"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:srcCompat="@android:drawable/btn_star_big_on" />
+        app:srcCompat="@drawable/user" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
