@@ -1,10 +1,14 @@
 package com.example.login;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +22,15 @@ public class ListadoUsuarios extends AppCompatActivity {
 
     ListView listado;
     ArrayList<String> listaUsuario;
+    // Buscar en lista
+
+
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        CargarLista();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +44,24 @@ public class ListadoUsuarios extends AppCompatActivity {
         });
 
         listado = (ListView) findViewById(R.id.lista);
+
         CargarLista();
+
+
+
+        listado.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                int idusu=Integer.parseInt(listaUsuario.get(i).split(" ")[0]);
+                String nombre=listaUsuario.get(i).split(" ")[1];
+                String apellido=listaUsuario.get(i).split(" ")[2];
+                Intent intent=new Intent(ListadoUsuarios.this,ModificarRegistro.class);
+                intent.putExtra("Id",idusu);
+                intent.putExtra("Nombre",nombre);
+                intent.putExtra("Apellido",apellido);
+                startActivity(intent);
+            }
+        });
     }
 
     private ArrayList<String> ListaUsuario(){

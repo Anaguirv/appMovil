@@ -26,6 +26,7 @@
         android:layout_marginTop="16dp"
         android:text="Bienvenido"
         android:textSize="34sp"
+        android:textColor="#333"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,6 +40,7 @@
         android:layout_marginEnd="148dp"
         android:text="Usuarios"
         android:textSize="24sp"
+        android:textColor="#333"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -74,6 +76,7 @@
         android:layout_marginEnd="56dp"
         android:text="Mostrar Sensores"
         android:textSize="24sp"
+        android:textColor="#333"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtUsuarios" />
 
@@ -85,6 +88,7 @@
         android:layout_marginEnd="44dp"
         android:text="Registrar Medición"
         android:textSize="24sp"
+        android:textColor="#333"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtSensores" />
 

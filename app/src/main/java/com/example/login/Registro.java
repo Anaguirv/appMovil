@@ -135,7 +135,7 @@ public class Registro extends AppCompatActivity {
             return;
         }
 
-        // 6. Si pasa todas las validaciones
+        // 6. Si pasa todas las validaciones se guardaran los datos en la base de datos
         guardar(nombre, apellido, usuario, clave);
         Toast.makeText(this, "Registro exitoso", Toast.LENGTH_LONG).show();
 
@@ -179,6 +179,7 @@ public class Registro extends AppCompatActivity {
         }
     }
 
+    //Función para guardar los datos ingresados por el usuario
     public void guardar(String nom, String ape, String mai, String cla)
     {
         ConexionDbHelper helper = new ConexionDbHelper(this, "APPSQLITE", null, 1);
@@ -196,9 +197,5 @@ public class Registro extends AppCompatActivity {
             Toast.makeText(this,"Error"+e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
-
-
-
-
 
 }
