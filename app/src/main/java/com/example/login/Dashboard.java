@@ -13,7 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class Dashboard extends AppCompatActivity {
     // Atributos
-    private TextView txtSensores, txtUsuarios;
+    private TextView txtSensores, txtUsuarios, txt_registro_medicion;
 
     //Métodos
     @Override
@@ -30,6 +30,7 @@ public class Dashboard extends AppCompatActivity {
         //Crear relación entre parte grafica y logica
         txtSensores = (TextView) findViewById(R.id.txtSensores);
         txtUsuarios = (TextView) findViewById(R.id.txtUsuarios);
+        txt_registro_medicion = (TextView) findViewById(R.id.txt_registro_medicion);
 
         //Confirurar escuchador para ir a Activity sensores
         txtSensores.setOnClickListener(new View.OnClickListener() {
@@ -46,6 +47,15 @@ public class Dashboard extends AppCompatActivity {
             public void onClick(View view) {
                 Intent ventana_usuarios = new Intent(Dashboard.this, ListadoUsuarios.class);
                 startActivity(ventana_usuarios);
+            }
+        });
+
+        //Configurar escuchador para ir a Activity RegitroMedicion
+        txt_registro_medicion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent ventana_regitro_medicion = new Intent(Dashboard.this, RegistroMedicion.class);
+                startActivity(ventana_regitro_medicion);
             }
         });
     }
