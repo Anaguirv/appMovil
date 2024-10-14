@@ -12,10 +12,23 @@
       android:id="@+id/titulo_reg_med"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="92dp"
-      android:text="Registro de Medición"
-      android:textSize="34sp"
+      android:layout_marginTop="16dp"
+      android:text="@string/seleccionar_alumbrado"
+      android:textSize="24sp"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.494"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+      android:id="@+id/tipo_alumbrado_art5"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="80dp"
+      android:text="@string/alumbrado_art5"
+      android:textSize="20sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.496"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/titulo_reg_med" />
 </androidx.constraintlayout.widget.ConstraintLayout>

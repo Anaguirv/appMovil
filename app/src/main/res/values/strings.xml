@@ -3,5 +3,8 @@
     <string name="btn_ingresar">INGRESAR</string>
     <string name="btn_registrar">REGISTRAR</string>
     <string name="btn_enviar">ENVIAR</string>
+    <string name="seleccionar_alumbrado">Selecciona tipo de Alumbrado</string>
+    <string name="alumbrado_art5">Peatonal, Vehicular e Industrial</string>
+
 
 </resources>
