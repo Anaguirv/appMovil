@@ -22,11 +22,11 @@ import java.util.Locale;
 
 public class ListadoUsuarios extends AppCompatActivity {
 
-    ListView listado;
-    SearchView searchView;
-    ArrayAdapter<String> adapter;
-    ArrayList<String> listaUsuario;
-    ArrayList<String> listaUsuarioFiltrada;
+    private ListView listado;
+    private SearchView searchView;
+    private ArrayAdapter<String> adapter;
+    private ArrayList<String> listaUsuario;
+    private ArrayList<String> listaUsuarioFiltrada;
 
     @Override
     protected void onPostResume() {
