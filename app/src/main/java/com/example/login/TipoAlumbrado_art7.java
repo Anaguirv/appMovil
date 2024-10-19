@@ -18,17 +18,17 @@ import androidx.core.view.WindowInsetsCompat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class TipoAlumbrado_art6 extends AppCompatActivity {
+public class TipoAlumbrado_art7 extends AppCompatActivity {
 
     private EditText vlrMed1, vlrReflexion, vlrTemperatura, vlrObservacion;
-    private Spinner spinnerMed1, spinnerReflexion, spinnervalor_horario, spinnerTemperatura, spinnerHorario;
+    private Spinner spinnerMed1, spinnerTemperatura, spinnerHorario, spinner_valor_horario, Spinner_ValorEmisionConjunta;
     private Button btnRegistrarMedicion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_tipo_alumbrado_art6);
+        setContentView(R.layout.activity_tipo_alumbrado_art7);
 
         // Manejar insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -39,10 +39,10 @@ public class TipoAlumbrado_art6 extends AppCompatActivity {
 
         // Inicializar campos
         spinnerMed1 = findViewById(R.id.spinner_med1);
-        spinnerReflexion = findViewById(R.id.spinner_reflexion);
         spinnerTemperatura = findViewById(R.id.spinner_temperatura);
         spinnerHorario = findViewById(R.id.spinner_horario);
-        spinnervalor_horario = findViewById(R.id.spinner_valor_horario);
+        spinner_valor_horario = findViewById(R.id.spinner_valor_horario);
+        Spinner_ValorEmisionConjunta = findViewById(R.id.spinner_valor_emision_conjunta);
         vlrMed1 = findViewById(R.id.vlr_med1);
         vlrReflexion = findViewById(R.id.vlr_reflexion);
         vlrTemperatura = findViewById(R.id.vlr_temperatura);
@@ -50,11 +50,15 @@ public class TipoAlumbrado_art6 extends AppCompatActivity {
         btnRegistrarMedicion = findViewById(R.id.btn_regsitrarMedicion);
 
         // Configurar todos los Spinners usando el método setupSpinner
-        setupSpinner(spinnerMed1, R.array.limite_flujo_luminoso_luminaria);
-        setupSpinner(spinnerReflexion, R.array.emision_reflexion_area);
-        setupSpinner(spinnerTemperatura, R.array.limites_temperatura_color_area);
-        setupSpinner(spinnerHorario, R.array.limite_horario_condicion);
-        setupSpinner(spinnervalor_horario, R.array.opciones_cumple);
+        setupSpinner(spinnerMed1, R.array.limite_emision_intensidad_luminosa);
+        setupSpinner(spinnerTemperatura, R.array.limite_temperatura_color_recinto);
+        setupSpinner(spinnerHorario, R.array.limite_horario_alumbrado_deportivo);
+        setupSpinner(spinner_valor_horario, R.array.opciones_cumple);
+        setupSpinner(Spinner_ValorEmisionConjunta, R.array.opciones_cumple);
+
+
+
+
 
 
         // Acción al presionar el botón de registro
@@ -63,7 +67,7 @@ public class TipoAlumbrado_art6 extends AppCompatActivity {
             public void onClick(View v) {
                 if (validarCampos()) {
                     // Proceder con la acción de guardado
-                    Toast.makeText(TipoAlumbrado_art6.this, "Datos registrados correctamente", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TipoAlumbrado_art7.this, "Datos registrados correctamente", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -93,6 +97,7 @@ public class TipoAlumbrado_art6 extends AppCompatActivity {
         spinner.setAdapter(adapter);
         spinner.setSelection(0, false);
     }
+
     /**
      * Método para validar los campos del formulario.
      *
@@ -116,21 +121,18 @@ public class TipoAlumbrado_art6 extends AppCompatActivity {
             vlrTemperatura.setError("Este campo es obligatorio");
             valid = false;
         }
-
-
-
+        if (spinner_valor_horario.getSelectedItemPosition() == 0) {
+            Toast.makeText(this, "Debe seleccionar una opción en Cumple para Límite Horario", Toast.LENGTH_SHORT).show();
+            valid = false;
+        }
         // No se valida vlrObservacion, ya que puede estar vacío
 
         // Validar spinners
         if (spinnerMed1.getSelectedItemPosition() == 0) {
-            Toast.makeText(this, "Debe seleccionar una opción en el Límite de Flujo Luminoso", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Debe seleccionar una opción en Límite de Emisión de Intensidad Luminosa", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
-        if (spinnerReflexion.getSelectedItemPosition() == 0) {
-            Toast.makeText(this, "Debe seleccionar una opción en Emisión por Reflexión: Luminancia", Toast.LENGTH_SHORT).show();
-            valid = false;
-        }
 
         if (spinnerTemperatura.getSelectedItemPosition() == 0) {
             Toast.makeText(this, "Debe seleccionar una opción en Límites de Temperatura de Color Correlacionada", Toast.LENGTH_SHORT).show();
