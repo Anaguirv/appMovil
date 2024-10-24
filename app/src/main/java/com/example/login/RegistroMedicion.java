@@ -14,7 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class RegistroMedicion extends AppCompatActivity {
 
     // atributos
-    private TextView tipo_alumbrado_art5;
+    private TextView tipo_alumbrado_art5, tipo_alumbrado_art6,tipo_alumbrado_art7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +29,9 @@ public class RegistroMedicion extends AppCompatActivity {
 
         // Relacionar capas
         tipo_alumbrado_art5 = (TextView) findViewById(R.id.tipo_alumbrado_art5);
+        tipo_alumbrado_art6 = (TextView) findViewById(R.id.tipo_alumbrado_art6);
+        tipo_alumbrado_art7 = (TextView) findViewById(R.id.tipo_alumbrado_art7);
+
 
 
         // Configurar escuchador para ir a Activity tipo alumbrado art5
@@ -38,6 +41,26 @@ public class RegistroMedicion extends AppCompatActivity {
                 Intent ventana_art5 = new Intent(RegistroMedicion.this, TipoAlumbrado_art5.class);
                 startActivity(ventana_art5);
             }
+        });
+
+        // Configurar escuchador para ir a Activity tipo alumbrado art6
+        tipo_alumbrado_art6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent ventana_art6 = new Intent(RegistroMedicion.this, TipoAlumbrado_art6.class);
+                startActivity(ventana_art6);
+            }
+
+        });
+
+        // Configurar escuchador para ir a Activity tipo alumbrado art7
+        tipo_alumbrado_art7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent ventana_art7 = new Intent(RegistroMedicion.this, TipoAlumbrado_art7.class);
+                startActivity(ventana_art7);
+            }
+
         });
     }
 }

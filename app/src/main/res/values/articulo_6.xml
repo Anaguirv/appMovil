@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Límite de Flujo Luminoso -->
+    <string-array name="limite_flujo_luminoso_luminaria">
+        <item>Punto de luz individual (≤ 1.000 lúmenes)</item>
+        <item>Lineal o puntual en línea (≤ 700 lúmenes por metro lineal)</item>
+        <item>Malla (≤ 700 lúmenes por metro cuadrado)</item>
+        <item>Hemisferio superior (0 lúmenes directos)</item>
+    </string-array>
+
+    <!-- Cumple (para todas las secciones) -->
+    <string-array name="opciones_cumple">
+        <item>Sí</item>
+        <item>No</item>
+        <item>N/A</item>
+    </string-array>
+
+    <!-- Emisión por Reflexión: Luminancia -->
+    <string-array name="emision_reflexion_area">
+        <item>Áreas de Protección Especial (≤ 5 cd/m²)</item>
+        <item>Resto del Territorio Nacional (≤ 10 cd/m²)</item>
+    </string-array>
+
+    <!-- Límites de Temperatura de Color Correlacionada -->
+    <string-array name="limites_temperatura_color_area">
+        <item>Áreas de Protección Especial (luz blanca, ≤ 2200 K)</item>
+        <item>Áreas de Protección Especial (luces multicolor)</item>
+        <item>Resto del Territorio Nacional (luz blanca, ≤ 2700 K)</item>
+    </string-array>
+
+    <!-- Límite Horario -->
+    <string-array name="limite_horario_condicion">
+        <item>Alumbrado ornamental y decorativo apagado</item>
+        <item>Excepciones (actividades autorizadas)</item>
+    </string-array>
+</resources>

@@ -5,6 +5,7 @@
     <string name="btn_enviar">ENVIAR</string>
     <string name="seleccionar_alumbrado">Selecciona tipo de Alumbrado</string>
     <string name="alumbrado_art5">Peatonal, Vehicular e Industrial</string>
-
+    <string name="alumbrado_art6">Ornamental y Decorativo</string>
+    <string name="alumbrado_art7"> Deportivo y Recreacional</string>
 
 </resources>
