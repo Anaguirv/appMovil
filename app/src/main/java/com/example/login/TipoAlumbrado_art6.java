@@ -117,10 +117,6 @@ public class TipoAlumbrado_art6 extends AppCompatActivity {
             valid = false;
         }
 
-
-
-        // No se valida vlrObservacion, ya que puede estar vacío
-
         // Validar spinners
         if (spinnerMed1.getSelectedItemPosition() == 0) {
             Toast.makeText(this, "Debe seleccionar una opción en el Límite de Flujo Luminoso", Toast.LENGTH_SHORT).show();

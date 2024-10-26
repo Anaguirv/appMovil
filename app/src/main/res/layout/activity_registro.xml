@@ -25,55 +25,57 @@
         android:id="@+id/nombreRegistro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="Ingrese nombre"
         android:inputType="text"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tituloCrearClave" />
 
-    <Button
-        android:id="@+id/btnRegistrar"
-        android:layout_width="208dp"
-        android:layout_height="58dp"
-        android:layout_marginTop="48dp"
-        android:backgroundTint="@color/botonIngreso"
-        android:text="@string/btn_registrar"
-        android:textColor="#eee"
-        android:textSize="20sp"
+    <EditText
+        android:id="@+id/apellidoRegistro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="Ingrese Apellido Paterno"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/claveRepetirRegistro" />
+        app:layout_constraintTop_toBottomOf="@+id/nombreRegistro" />
+
+    <!-- Campo para el apellido materno correctamente posicionado -->
+    <EditText
+        android:id="@+id/apellidoMaternoRegistro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="Ingrese Apellido Materno"
+        android:inputType="text"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/apellidoRegistro" />
 
     <EditText
-        android:id="@+id/claveRepetirRegistro"
+        android:id="@+id/usuarioRegistro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:ems="10"
-        android:hint="Repetir contraseña"
-        android:inputType="textPassword"
+        android:hint="correo@correo.cl"
+        android:inputType="textEmailAddress"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/claveRegistro" />
-
-    <EditText
-        android:id="@+id/claveRegistro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:ems="10"
-        android:hint="Ingrese contraseña"
-        android:inputType="textPassword"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nacimientoRegistro" />
+        app:layout_constraintTop_toBottomOf="@+id/apellidoMaternoRegistro" />
 
     <EditText
         android:id="@+id/nacimientoRegistro"
@@ -92,18 +94,46 @@
         app:layout_constraintTop_toBottomOf="@+id/usuarioRegistro" />
 
     <EditText
-        android:id="@+id/usuarioRegistro"
+        android:id="@+id/claveRegistro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:ems="10"
+        android:hint="Ingrese contraseña"
+        android:inputType="textPassword"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.517"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nacimientoRegistro" />
+
+    <EditText
+        android:id="@+id/claveRepetirRegistro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:ems="10"
-        android:hint="correo@correo.cl"
-        android:inputType="textEmailAddress"
+        android:hint="Repetir contraseña"
+        android:inputType="textPassword"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.517"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/apellidoRegistro" />
+        app:layout_constraintTop_toBottomOf="@+id/claveRegistro" />
+
+    <Button
+        android:id="@+id/btnRegistrar"
+        android:layout_width="208dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/botonIngreso"
+        android:text="@string/btn_registrar"
+        android:textColor="#eee"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/claveRepetirRegistro" />
 
     <TextView
         android:id="@+id/tituloCrearClave"
@@ -115,19 +145,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imglogo" />
-
-    <EditText
-        android:id="@+id/apellidoRegistro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:inputType="text"
-        android:hint="Ingrese Apellido"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nombreRegistro" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
