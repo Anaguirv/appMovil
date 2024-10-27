@@ -56,11 +56,6 @@ public class TipoAlumbrado_art7 extends AppCompatActivity {
         setupSpinner(spinner_valor_horario, R.array.opciones_cumple);
         setupSpinner(Spinner_ValorEmisionConjunta, R.array.opciones_cumple);
 
-
-
-
-
-
         // Acción al presionar el botón de registro
         btnRegistrarMedicion.setOnClickListener(new View.OnClickListener() {
             @Override

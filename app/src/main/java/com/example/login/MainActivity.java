@@ -1,6 +1,7 @@
 package com.example.login;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,19 +15,20 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
-    // 1. Atributos
-    // visibilidad - tipo/clase - nombre = valor(opcional)
     private TextView txtmsj, txtregistro, txtolvide;
     private Button btningresar;
     private EditText txtuser, txtclave;
     private String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 
-    // Métodos
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,78 +40,98 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // 2. Crear relación entre parte gráfica (capa Vista) y parte lógica (capa Controlador)
-        // Casteo -> (TextView) indica a la variable declarada como debe comportarse (debe ser del mismo tipo que el objeto en la vista)
-        txtmsj=(TextView) findViewById(R.id.txtmensaje);
-        btningresar=(Button) findViewById(R.id.btningresar);
-        txtregistro=(TextView) findViewById(R.id.txtregistro);
-        txtolvide=(TextView) findViewById(R.id.txtolvide);
-        txtuser=(EditText) findViewById(R.id.txtuser);
-        txtclave=(EditText) findViewById(R.id.txtclave);
+        txtmsj = findViewById(R.id.txtmensaje);
+        btningresar = findViewById(R.id.btningresar);
+        txtregistro = findViewById(R.id.txtregistro);
+        txtolvide = findViewById(R.id.txtolvide);
+        txtuser = findViewById(R.id.txtuser);
+        txtclave = findViewById(R.id.txtclave);
 
         txtmsj.setText("Bienvenido a la Aplicación SFDS1");
 
-        // 3. Setiar o configurar el escuchador del evento "clic" al botón "ingresar"
         btningresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 4. Capturar los textos de usuario y contraseña
                 String usuario = txtuser.getText().toString().trim();
                 String clave = txtclave.getText().toString().trim();
 
-                // 5. Validar que el campo usuario (correo) no esté vacío
                 if (usuario.isEmpty()) {
                     txtuser.setError("Este campo no puede estar vacío");
                     Toast.makeText(MainActivity.this, "Debe ingresar un usuario (email)", Toast.LENGTH_LONG).show();
-                }
-                // 6. Validar que el formato del correo sea correcto
-                else if (!validarPatron(emailPattern, usuario)) {
+                } else if (!validarPatron(emailPattern, usuario)) {
                     txtuser.setError("Por favor, ingresa un email válido");
                     Toast.makeText(MainActivity.this, "El email ingresado no cumple con el formato", Toast.LENGTH_LONG).show();
-                }
-                // 7. Validar que el campo contraseña no esté vacío
-                else if (clave.isEmpty()) {
+                } else if (clave.isEmpty()) {
                     txtclave.setError("Este campo no puede estar vacío");
                     Toast.makeText(MainActivity.this, "Debe ingresar una contraseña", Toast.LENGTH_LONG).show();
-                }
-                // 8. Si las validaciones son exitosas, iniciar la Activity "Dashboard"
-                else {
-                    Intent ventanaingresar = new Intent(MainActivity.this, Dashboard.class);
-                    startActivity(ventanaingresar);
+                } else {
+                    // Llamar al método para verificar usuario en la base de datos
+                    verificarUsuario(usuario, clave);
                 }
             }
         });
 
-        txtregistro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent ventanaRegistrar=new Intent(MainActivity.this, Registro.class);
-                startActivities(new Intent[]{ventanaRegistrar});
-            }
+        txtregistro.setOnClickListener(view -> {
+            Intent ventanaRegistrar = new Intent(MainActivity.this, Registro.class);
+            startActivity(ventanaRegistrar);
         });
 
-        txtolvide.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent ventanaRecuperar=new Intent(MainActivity.this, RecuperarClave.class);
-                startActivities(new Intent[]{ventanaRecuperar});
-            }
+        txtolvide.setOnClickListener(view -> {
+            Intent ventanaRecuperar = new Intent(MainActivity.this, RecuperarClave.class);
+            startActivity(ventanaRecuperar);
         });
     }
 
-    /*
-    // Método para validar el email con una expresión regular
-    private boolean isValidEmail(String email) {
-        Pattern pattern = Pattern.compile(emailPattern);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
-    */
-
-    // Método para validaciones de inputs de usuario con las expresiones regulares
     private boolean validarPatron(String patron, String variable) {
         Pattern pattern = Pattern.compile(patron);
         Matcher matcher = pattern.matcher(variable);
         return matcher.matches();
+    }
+
+    // Método para verificar usuario en la base de datos
+    private void verificarUsuario(String usuario, String clave) {
+        String url = "http://52.71.115.13/consultarUsuario.php?correo=" + usuario + "&clave=" + clave;
+        new VerificarUsuarioTask(usuario).execute(url);
+    }
+
+    // Clase interna para manejar la solicitud en segundo plano
+    private class VerificarUsuarioTask extends AsyncTask<String, Void, String> {
+        private final String emailIngresado;
+
+        // Constructor para inicializar el email
+        public VerificarUsuarioTask(String emailIngresado) {
+            this.emailIngresado = emailIngresado;
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+            StringBuilder result = new StringBuilder();
+            try {
+                URL url = new URL(urls[0]);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+                reader.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return result.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result.equals("Login exitoso. Usuario encontrado.")) {
+                Intent ventanaingresar = new Intent(MainActivity.this, Dashboard.class);
+                ventanaingresar.putExtra("correo", emailIngresado); // Agrega el correo al intent
+                startActivity(ventanaingresar);
+            } else {
+                Toast.makeText(MainActivity.this, "Usuario no registrado o datos incorrectos.", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

@@ -16,6 +16,13 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    packagingOptions {
+        resources {
+            excludes += "META-INF/NOTICE.md"
+            excludes += "META-INF/LICENSE.md"  // Agrega esta línea para excluir LICENSE.md
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -32,14 +39,15 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation("com.airbnb.android:lottie:6.5.2")
     implementation(libs.annotations)
-    implementation(libs.annotations)
+    implementation("com.android.volley:volley:1.2.1")
+    implementation("com.sun.mail:android-mail:1.6.7")
+    implementation("com.sun.mail:android-activation:1.6.7")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

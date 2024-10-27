@@ -8,7 +8,7 @@
     android:clickable="true"
     android:focusable="false"
     android:textAlignment="center"
-    tools:context=".Registro">
+    tools:context=".EditarUsuario">
 
     <ImageView
         android:id="@+id/imglogo"
@@ -21,8 +21,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/icono" />
 
+    <TextView
+        android:id="@+id/tituloEditarUsuario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="EDITAR USUARIO"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imglogo" />
+
     <EditText
-        android:id="@+id/nombreRegistro"
+        android:id="@+id/nombreEditar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -33,10 +44,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tituloCrearClave" />
+        app:layout_constraintTop_toBottomOf="@+id/tituloEditarUsuario" />
 
     <EditText
-        android:id="@+id/apellidoRegistro"
+        android:id="@+id/apellidoPaternoEditar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -47,11 +58,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nombreRegistro" />
+        app:layout_constraintTop_toBottomOf="@+id/nombreEditar" />
 
-    <!-- Campo para el apellido materno correctamente posicionado -->
     <EditText
-        android:id="@+id/apellidoMaternoRegistro"
+        android:id="@+id/apellidoMaternoEditar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -61,10 +71,10 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/apellidoRegistro" />
+        app:layout_constraintTop_toBottomOf="@+id/apellidoPaternoEditar" />
 
     <EditText
-        android:id="@+id/usuarioRegistro"
+        android:id="@+id/correoEditar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -75,10 +85,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/apellidoMaternoRegistro" />
+        app:layout_constraintTop_toBottomOf="@+id/apellidoMaternoEditar" />
 
     <EditText
-        android:id="@+id/nacimientoRegistro"
+        android:id="@+id/nacimientoEditar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -91,59 +101,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.517"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/usuarioRegistro" />
+        app:layout_constraintTop_toBottomOf="@+id/correoEditar" />
 
-    <EditText
-        android:id="@+id/claveRegistro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:ems="10"
-        android:hint="Ingrese contraseña"
-        android:inputType="textPassword"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.517"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nacimientoRegistro" />
-
-    <EditText
-        android:id="@+id/claveRepetirRegistro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:ems="10"
-        android:hint="Repetir contraseña"
-        android:inputType="textPassword"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.517"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/claveRegistro" />
-
+    <!-- Botón para guardar cambios -->
     <Button
-        android:id="@+id/btnRegistrar"
+        android:id="@+id/btnGuardarCambios"
         android:layout_width="208dp"
         android:layout_height="58dp"
         android:layout_marginTop="20dp"
         android:backgroundTint="@color/botonIngreso"
-        android:text="@string/btn_registrar"
+        android:text="Guardar Cambios"
         android:textColor="#eee"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/claveRepetirRegistro" />
+        app:layout_constraintTop_toBottomOf="@+id/nacimientoEditar" />
 
-    <TextView
-        android:id="@+id/tituloCrearClave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="REGISTRO DE USUARIO"
-        android:textSize="24sp"
+    <!-- Botón para eliminar usuario -->
+    <Button
+        android:id="@+id/btnEliminarUsuario"
+        android:layout_width="208dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/holo_red_dark"
+        android:text="Eliminar Usuario"
+        android:textColor="#eee"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imglogo" />
+        app:layout_constraintTop_toBottomOf="@+id/btnGuardarCambios" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

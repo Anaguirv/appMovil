@@ -5,8 +5,8 @@
     android:id="@+id/dashboard"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Dashboard"
-    android:background="#eee">
+    android:background="#eee"
+    tools:context=".Dashboard">
 
     <ImageView
         android:id="@+id/imglogo"
@@ -14,10 +14,40 @@
         android:layout_height="140dp"
         android:layout_marginTop="44dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/astronomy"/>
+
+    <!-- TextView para mostrar el correo del usuario -->
+    <TextView
+        android:id="@+id/txt_usuario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="correo@ejemplo.com"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <!-- TextView para mostrar la fecha y hora -->
+    <TextView
+        android:id="@+id/txt_fecha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Fecha y hora"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_usuario" />
 
     <TextView
         android:id="@+id/textView"
@@ -25,10 +55,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Bienvenido"
-        android:textSize="34sp"
+        android:textAlignment="center"
         android:textColor="#333"
+        android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imglogo" />
 
@@ -36,11 +67,11 @@
         android:id="@+id/txtUsuarios"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="76dp"
+        android:layout_marginTop="172dp"
         android:layout_marginEnd="148dp"
         android:text="Usuarios"
-        android:textSize="24sp"
         android:textColor="#333"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -54,7 +85,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView7"
         app:srcCompat="@drawable/sensor"/>
-
 
     <ImageView
         android:id="@+id/imageView3"
@@ -96,12 +126,11 @@
         android:id="@+id/imageView7"
         android:layout_width="66dp"
         android:layout_height="63dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="152dp"
         app:layout_constraintEnd_toStartOf="@+id/txtUsuarios"
         app:layout_constraintHorizontal_bias="0.776"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         app:srcCompat="@drawable/user" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
