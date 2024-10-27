@@ -9,10 +9,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,10 +25,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.net.URLEncoder;
-import android.util.Log;
 
-public class Registro extends AppCompatActivity {
+public class RegistroUsuario extends AppCompatActivity {
 
     // Atributos de vista
     private EditText nombreRegistro, apellidoRegistro, apellidoMaternoRegistro, usuarioRegistro, nacimientoRegistro,
@@ -39,7 +42,7 @@ public class Registro extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registro_usuario);
+        setContentView(R.layout.activity_registro);
 
         // Inicialización de los elementos de la interfaz
         nombreRegistro = findViewById(R.id.nombreRegistro);
@@ -131,7 +134,7 @@ public class Registro extends AppCompatActivity {
 
         // Muestra un mensaje de éxito y redirige a la actividad principal
         Toast.makeText(this, "Registro exitoso", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(Registro.this, MainActivity.class);
+        Intent intent = new Intent(RegistroUsuario.this, DashboardUsuario.class);
         startActivity(intent);
         finish();
     }

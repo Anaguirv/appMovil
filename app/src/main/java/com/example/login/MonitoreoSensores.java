@@ -72,7 +72,7 @@ public class MonitoreoSensores extends AppCompatActivity {
                 null, response -> {
             try {
                 // Obtener temperatura y humedad
-                temp.setText(response.getString("temperatura") + " C");
+                temp.setText(response.getString("temperatura") + " °C");
                 hum.setText(response.getString("humedad") + " %");
 
                 // Cambiar imagen de temperatura

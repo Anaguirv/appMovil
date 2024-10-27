@@ -27,7 +27,7 @@ public class DashboardUsuario extends AppCompatActivity {
 
         // Configurar el clic en "Registrar Usuarios" para abrir la actividad Registro
         txtRegistrarUsuarios.setOnClickListener(view -> {
-            Intent intent = new Intent(DashboardUsuario.this, Registro.class);
+            Intent intent = new Intent(DashboardUsuario.this, RegistroUsuario.class);
             startActivity(intent);
         });
     }

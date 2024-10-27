@@ -26,26 +26,27 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="correo@ejemplo.com"
-        android:textColor="@color/black"
-        android:textSize="14sp"
         android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <!-- TextView para mostrar la fecha y hora -->
+
     <TextView
         android:id="@+id/txt_fecha"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:text="Fecha y hora"
-        android:textColor="@color/black"
-        android:textSize="14sp"
         android:textAlignment="center"
+        android:textColor="@color/purple"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.484"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_usuario" />
 
@@ -63,12 +64,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imglogo" />
 
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="66dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="116dp"
+        app:layout_constraintEnd_toStartOf="@+id/txtUsuarios"
+        app:layout_constraintHorizontal_bias="0.757"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:srcCompat="@drawable/user" />
+
+    <TextView
+        android:id="@+id/txt_registro_medicion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="84dp"
+        android:layout_marginEnd="52dp"
+        android:text="Registrar Medición"
+        android:textColor="#333"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtSensores" />
+
     <TextView
         android:id="@+id/txtUsuarios"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="172dp"
-        android:layout_marginEnd="148dp"
+        android:layout_marginTop="136dp"
+        android:layout_marginEnd="156dp"
         android:text="Usuarios"
         android:textColor="#333"
         android:textSize="24sp"
@@ -79,58 +103,35 @@
         android:id="@+id/imageView2"
         android:layout_width="66dp"
         android:layout_height="63dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="36dp"
         app:layout_constraintEnd_toStartOf="@+id/txtSensores"
-        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintHorizontal_bias="0.782"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView7"
-        app:srcCompat="@drawable/sensor"/>
+        app:srcCompat="@drawable/sensor" />
 
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="66dp"
         android:layout_height="63dp"
         android:layout_marginStart="36dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="48dp"
         app:layout_constraintEnd_toStartOf="@+id/txt_registro_medicion"
-        app:layout_constraintHorizontal_bias="0.676"
+        app:layout_constraintHorizontal_bias="0.631"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        app:srcCompat="@drawable/book"/>
+        app:srcCompat="@drawable/book" />
 
     <TextView
         android:id="@+id/txtSensores"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="76dp"
-        android:layout_marginEnd="56dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="64dp"
         android:text="Mostrar Sensores"
-        android:textSize="24sp"
         android:textColor="#333"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtUsuarios" />
-
-    <TextView
-        android:id="@+id/txt_registro_medicion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        android:layout_marginEnd="44dp"
-        android:text="Registrar Medición"
-        android:textSize="24sp"
-        android:textColor="#333"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtSensores" />
-
-    <ImageView
-        android:id="@+id/imageView7"
-        android:layout_width="66dp"
-        android:layout_height="63dp"
-        android:layout_marginTop="152dp"
-        app:layout_constraintEnd_toStartOf="@+id/txtUsuarios"
-        app:layout_constraintHorizontal_bias="0.776"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:srcCompat="@drawable/user" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
