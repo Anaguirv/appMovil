@@ -1,21 +1,25 @@
 package com.example.login;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -27,32 +31,20 @@ public class ListadoUsuarios extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
     private ArrayList<String> listaUsuario;
     private ArrayList<String> listaUsuarioFiltrada;
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        CargarLista();
-    }
+    private ArrayList<JSONObject> listaUsuariosDatos; // Almacena todos los datos para EditarUsuario
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_listado_usuarios);
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         listado = findViewById(R.id.lista);
         searchView = findViewById(R.id.searchView);
 
-        // Cargar la lista de usuarios desde la base de datos
+        // Cargar la lista de usuarios desde MySQL a través de PHP
         CargarLista();
 
-        // Configuración del filtro para la barra de búsqueda
+        // Configurar el filtro para la barra de búsqueda
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -61,65 +53,73 @@ public class ListadoUsuarios extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                try {
-                    filtrarLista(newText);
-                } catch (Exception e) {
-                    Log.e("ListadoUsuarios", "Error al filtrar la lista: " + e.getMessage());
-                    e.printStackTrace();
-                }
+                filtrarLista(newText);
                 return false;
             }
         });
 
-        // Configurar el comportamiento del clic en cada item de la lista
-        listado.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                try {
-                    String[] datosUsuario = listaUsuarioFiltrada.get(i).split(" ");
-                    int idusu = Integer.parseInt(datosUsuario[0]);
-                    String nombre = datosUsuario[1];
-                    String apellido = datosUsuario[2];
-                    Intent intent = new Intent(ListadoUsuarios.this, ModificarRegistro.class);
-                    intent.putExtra("Id", idusu);
-                    intent.putExtra("Nombre", nombre);
-                    intent.putExtra("Apellido", apellido);
-                    startActivity(intent);
-                } catch (Exception e) {
-                    Log.e("ListadoUsuarios", "Error al seleccionar el item: " + e.getMessage());
-                }
+        // Configurar el clic en cada item de la lista para abrir EditarUsuario
+        listado.setOnItemClickListener((adapterView, view, position, id) -> {
+            try {
+                JSONObject usuarioSeleccionado = listaUsuariosDatos.get(position); // Obtener el objeto JSON seleccionado
+
+                // Crear un Intent para abrir la actividad EditarUsuario y pasar los datos completos
+                Intent intent = new Intent(ListadoUsuarios.this, EditarUsuario.class);
+                intent.putExtra("id_usuario", usuarioSeleccionado.getString("id_usuario"));
+                intent.putExtra("nombre", usuarioSeleccionado.getString("nombre"));
+                intent.putExtra("apellidoPaterno", usuarioSeleccionado.getString("apellidoPaterno"));
+                intent.putExtra("apellidoMaterno", usuarioSeleccionado.getString("apellidoMaterno"));
+                intent.putExtra("correo", usuarioSeleccionado.getString("correo")); // Pasar el correo
+                intent.putExtra("fechaNacimiento", usuarioSeleccionado.getString("fechaNacimiento")); // Pasar la fecha de nacimiento
+                startActivityForResult(intent, 1); // Iniciar EditarUsuario esperando resultado
+            } catch (JSONException e) {
+                Log.e("ListadoUsuarios", "Error al seleccionar el usuario: " + e.getMessage());
+                e.printStackTrace();
             }
         });
     }
 
-    // Método para obtener la lista de usuarios desde SQLite
-    private ArrayList<String> ListaUsuario() {
-        ArrayList<String> datos = new ArrayList<>();
-        ConexionDbHelper helper = new ConexionDbHelper(this, "APPSQLITE", null, 1);
-        SQLiteDatabase db = helper.getReadableDatabase();
-        String sql = "SELECT * FROM USUARIOS";
-        Cursor c = db.rawQuery(sql, null);
-        if (c.moveToFirst()) {
-            do {
-                String linea = c.getInt(0) + " " + c.getString(1) + " " + c.getString(2) + " " + c.getString(3);
-                datos.add(linea);
-            } while (c.moveToNext());
-        }
-        c.close(); // Asegurarse de cerrar el cursor
-        db.close(); // Asegurarse de cerrar la base de datos
-        return datos;
-    }
-
-    // Método para cargar la lista en el ListView
+    // Método para cargar la lista de usuarios desde MySQL usando PHP
     private void CargarLista() {
-        try {
-            listaUsuario = ListaUsuario();
-            listaUsuarioFiltrada = new ArrayList<>(listaUsuario); // Inicialmente, lista filtrada = lista completa
-            adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listaUsuarioFiltrada);
-            listado.setAdapter(adapter);
-        } catch (Exception e) {
-            Log.e("ListadoUsuarios", "Error al cargar la lista: " + e.getMessage());
-        }
+        String url = "http://52.71.115.13/consultarUsuarios.php"; // URL del archivo PHP
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                Request.Method.GET, url, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        listaUsuario = new ArrayList<>();
+                        listaUsuarioFiltrada = new ArrayList<>();
+                        listaUsuariosDatos = new ArrayList<>();
+
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject usuario = response.getJSONObject(i);
+                                listaUsuariosDatos.add(usuario); // Agregar el objeto JSON completo a la lista
+                                String nombreCompleto = usuario.getString("nombre") + " " +
+                                        usuario.getString("apellidoPaterno") + " " +
+                                        usuario.getString("apellidoMaterno");
+                                listaUsuario.add(nombreCompleto); // Mostrar solo el nombre completo
+                            }
+                            listaUsuarioFiltrada.addAll(listaUsuario);
+                            adapter = new ArrayAdapter<>(ListadoUsuarios.this, android.R.layout.simple_list_item_1, listaUsuarioFiltrada);
+                            listado.setAdapter(adapter);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(ListadoUsuarios.this, "Error al procesar los datos", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(ListadoUsuarios.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        queue.add(jsonArrayRequest);
     }
 
     // Método para filtrar la lista
@@ -128,15 +128,23 @@ public class ListadoUsuarios extends AppCompatActivity {
         listaUsuarioFiltrada.clear();
 
         if (filtro.isEmpty()) {
-            listaUsuarioFiltrada.addAll(listaUsuario); // Mostrar lista completa si no hay filtro
+            listaUsuarioFiltrada.addAll(listaUsuario);
         } else {
             for (String usuario : listaUsuario) {
                 if (usuario.toLowerCase(Locale.ROOT).contains(filtro)) {
-                    listaUsuarioFiltrada.add(usuario); // Agregar usuarios que coincidan con el filtro
+                    listaUsuarioFiltrada.add(usuario);
                 }
             }
         }
+        adapter.notifyDataSetChanged();
+    }
 
-        adapter.notifyDataSetChanged(); // Notificar cambios al adaptador
+    // Método para recargar la lista al volver de EditarUsuario
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            CargarLista(); // Recargar la lista
+        }
     }
 }

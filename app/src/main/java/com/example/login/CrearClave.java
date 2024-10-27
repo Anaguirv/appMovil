@@ -3,6 +3,7 @@ package com.example.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,8 +15,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class CrearClave extends AppCompatActivity {
 
@@ -33,26 +42,22 @@ public class CrearClave extends AppCompatActivity {
             return insets;
         });
 
-        // Vincular los EditTexts y el botón a la capa de diseño
         ingresoClave = findViewById(R.id.ingresoClave);
         repetirClave = findViewById(R.id.repetirClave);
         btnRegistrarClaveNueva = findViewById(R.id.btnRegistrarClaveNueva);
 
-        // Configurar el evento de clic del botón "Registrar"
         btnRegistrarClaveNueva.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 validarYRegistrarClave();
             }
         });
-
     }
+
     private void validarYRegistrarClave() {
-        // Obtener las entradas de texto
         String clave = ingresoClave.getText().toString();
         String repetirClaveTexto = repetirClave.getText().toString();
 
-        // Validar que los campos no estén vacíos
         if (TextUtils.isEmpty(clave)) {
             ingresoClave.setError("Por favor, ingresa una contraseña");
             Toast.makeText(this, "El campo de clave no puede estar vacío", Toast.LENGTH_SHORT).show();
@@ -65,35 +70,59 @@ public class CrearClave extends AppCompatActivity {
             return;
         }
 
-        // Validar que ambas claves coincidan
         if (!clave.equals(repetirClaveTexto)) {
-            ingresoClave.setError("Por favor, ingresa una contraseña");
+            ingresoClave.setError("Las claves no coinciden");
             Toast.makeText(this, "Las claves no coinciden", Toast.LENGTH_LONG).show();
             return;
         }
 
-        // Validar robustez de la clave
         if (!esClaveValida(clave)) {
             Toast.makeText(this, "La clave debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial.", Toast.LENGTH_LONG).show();
             return;
         }
 
-        // Si todo es correcto, mostramos un mensaje de éxito
-        Toast.makeText(this, "Clave registrada con éxito", Toast.LENGTH_SHORT).show();
-
-        // Redirigir a otra actividad si es necesario, o realizar la operación deseada
-        Intent intent = new Intent(CrearClave.this, MainActivity.class);
-        startActivity(intent);
-        finish();
+        guardarNuevaClave(clave);
     }
 
-    // Método para validar que la clave cumpla con los requisitos
     private boolean esClaveValida(String clave) {
-        // Expresión regular para una clave robusta
         String passwordPattern = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+=!_-])(?=\\S+$).{8,}$";
         Pattern pattern = Pattern.compile(passwordPattern);
         Matcher matcher = pattern.matcher(clave);
         return matcher.matches();
     }
+
+    private void guardarNuevaClave(String clave) {
+        String correo = getIntent().getStringExtra("correo");
+        Log.d("CrearClave", "Correo recibido: " + correo);  // Log para verificar que el correo se recibe correctamente
+        String url = "http://52.71.115.13/guardarNuevaClave.php?correo=" + correo + "&nuevaClave=" + clave;
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    Log.d("CrearClave", "Respuesta del servidor: " + response);
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        boolean success = jsonResponse.getBoolean("success");
+
+                        if (success) {
+                            Toast.makeText(CrearClave.this, "Clave registrada con éxito", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(CrearClave.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            String message = jsonResponse.getString("message");
+                            Toast.makeText(CrearClave.this, "Error al guardar la clave: " + message, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(CrearClave.this, "Error en la respuesta del servidor", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> Toast.makeText(CrearClave.this, "Error de conexión: " + error.getMessage(), Toast.LENGTH_SHORT).show()
+        );
+
+        queue.add(stringRequest);
+    }
+
 
 }

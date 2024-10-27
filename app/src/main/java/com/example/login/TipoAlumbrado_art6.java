@@ -1,5 +1,4 @@
 package com.example.login;
-
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -21,7 +20,7 @@ import java.util.Arrays;
 public class TipoAlumbrado_art6 extends AppCompatActivity {
 
     private EditText vlrMed1, vlrReflexion, vlrTemperatura, vlrObservacion;
-    private Spinner spinnerMed1, spinnerReflexion, spinnervalor_horario, spinnerTemperatura, spinnerHorario;
+    private Spinner spinnerMed1, spinnerReflexion, spinnervalor_horario, spinnerTemperatura, spinnerHorario, spinnerValorHemisferioSuperior;
     private Button btnRegistrarMedicion;
 
     @Override
@@ -43,6 +42,8 @@ public class TipoAlumbrado_art6 extends AppCompatActivity {
         spinnerTemperatura = findViewById(R.id.spinner_temperatura);
         spinnerHorario = findViewById(R.id.spinner_horario);
         spinnervalor_horario = findViewById(R.id.spinner_valor_horario);
+        spinnerValorHemisferioSuperior = findViewById(R.id.spinner_valor_hermiferioSuperior);
+
         vlrMed1 = findViewById(R.id.vlr_med1);
         vlrReflexion = findViewById(R.id.vlr_reflexion);
         vlrTemperatura = findViewById(R.id.vlr_temperatura);
@@ -55,7 +56,7 @@ public class TipoAlumbrado_art6 extends AppCompatActivity {
         setupSpinner(spinnerTemperatura, R.array.limites_temperatura_color_area);
         setupSpinner(spinnerHorario, R.array.limite_horario_condicion);
         setupSpinner(spinnervalor_horario, R.array.opciones_cumple);
-
+        setupSpinner(spinnerValorHemisferioSuperior, R.array.opciones_cumple);
 
         // Acción al presionar el botón de registro
         btnRegistrarMedicion.setOnClickListener(new View.OnClickListener() {
@@ -93,6 +94,7 @@ public class TipoAlumbrado_art6 extends AppCompatActivity {
         spinner.setAdapter(adapter);
         spinner.setSelection(0, false);
     }
+
     /**
      * Método para validar los campos del formulario.
      *
