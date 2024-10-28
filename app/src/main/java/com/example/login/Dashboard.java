@@ -1,8 +1,11 @@
 package com.example.login;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -21,6 +24,11 @@ public class Dashboard extends AppCompatActivity {
     private TextView txtSensores, txtUsuarios, txtRegistroMedicion;
     private final Handler mHandler = new Handler();
 
+    private ImageView navBarInicio, navBarUser, navBarSensor, navBarGit;
+    private TextView txtNavBarInicio, txtNavBarUser, txtNavBarSensor;
+
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +49,51 @@ public class Dashboard extends AppCompatActivity {
         txtFecha = findViewById(R.id.txt_fecha);
         txtUsuario = findViewById(R.id.txt_usuario);
 
+        //navBar
+        navBarGit = findViewById(R.id.navBarGit);
+        navBarSensor = findViewById(R.id.navBarSensor);
+        navBarUser = findViewById(R.id.navBarUser);
+        navBarInicio = findViewById(R.id.navBarInicio);
+        txtNavBarSensor = findViewById(R.id.txtNavBarSensor);
+        txtNavBarUser = findViewById(R.id.txtNavBarUser);
+        txtNavBarInicio = findViewById(R.id.txtNavBarInicio);
+        //navBar end
+        // Funcionalidad navBar
+        navBarInicio.setOnClickListener(view -> {
+            Intent intent2 = new Intent(Dashboard.this, Dashboard.class);
+            startActivity(intent2);
+        });
+        txtNavBarInicio.setOnClickListener(view -> {
+            Intent intent2 = new Intent(Dashboard.this, Dashboard.class);
+            startActivity(intent2);
+        });
+
+        navBarUser.setOnClickListener(view -> {
+            Intent intent2 = new Intent(Dashboard.this, DashboardUsuario.class);
+            startActivity(intent2);
+        });
+        txtNavBarUser.setOnClickListener(view -> {
+            Intent intent2 = new Intent(Dashboard.this, DashboardUsuario.class);
+            startActivity(intent2);
+        });
+
+        navBarSensor.setOnClickListener(view -> {
+            Intent intent2 = new Intent(Dashboard.this, MonitoreoSensores.class);
+            startActivity(intent2);
+        });
+        txtNavBarSensor.setOnClickListener(view -> {
+            Intent intent2 = new Intent(Dashboard.this, MonitoreoSensores.class);
+            startActivity(intent2);
+        });
+
+        navBarGit.setOnClickListener(view -> {
+            String url = "https://github.com/Anaguirv/appMovil";
+            Intent intent2 = new Intent(Intent.ACTION_VIEW);
+            intent2.setData(Uri.parse(url));
+            startActivity(intent2);
+        });
+        // navBar END
+
         // Configurar el texto para mostrar la fecha y el correo por separado
         txtUsuario.setText(correo);
         mHandler.post(actualizarFechaRunnable);
@@ -48,6 +101,7 @@ public class Dashboard extends AppCompatActivity {
         txtSensores = findViewById(R.id.txtSensores);
         txtUsuarios = findViewById(R.id.txtUsuarios);
         txtRegistroMedicion = findViewById(R.id.txt_registro_medicion);
+
 
         // Configurar escuchador para ir a Activity Sensores
         txtSensores.setOnClickListener(view -> {

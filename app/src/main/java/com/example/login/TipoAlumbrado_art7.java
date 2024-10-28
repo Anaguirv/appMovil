@@ -31,7 +31,7 @@ public class TipoAlumbrado_art7 extends AppCompatActivity {
         setContentView(R.layout.activity_tipo_alumbrado_art7);
 
         // Manejar insets
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.monitoreoSensores), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;

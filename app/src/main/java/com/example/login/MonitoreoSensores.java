@@ -1,6 +1,8 @@
 package com.example.login;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ImageView;
@@ -28,6 +30,8 @@ public class MonitoreoSensores extends AppCompatActivity {
     RequestQueue datos;
     Handler mHandler = new Handler();
     private int estadoLuz = 0; // Estado inicial: 0 (apagado)
+    private ImageView navBarInicio, navBarUser, navBarSensor, navBarGit;
+    private TextView txtNavBarInicio, txtNavBarUser, txtNavBarSensor;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -35,7 +39,7 @@ public class MonitoreoSensores extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_monitoreo_sensores);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.monitoreoSensores), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -46,6 +50,50 @@ public class MonitoreoSensores extends AppCompatActivity {
         hum = findViewById(R.id.txt_humedad);
         imagentemp = findViewById(R.id.imagen_temp);
         imagenluz = findViewById(R.id.imagen_luz);
+        //navBar
+        navBarGit = findViewById(R.id.navBarGit);
+        navBarSensor = findViewById(R.id.navBarSensor);
+        navBarUser = findViewById(R.id.navBarUser);
+        navBarInicio = findViewById(R.id.navBarInicio);
+        txtNavBarSensor = findViewById(R.id.txtNavBarSensor);
+        txtNavBarUser = findViewById(R.id.txtNavBarUser);
+        txtNavBarInicio = findViewById(R.id.txtNavBarInicio);
+        //navBar end
+        // Funcionalidad navBar
+        navBarInicio.setOnClickListener(view -> {
+            Intent intent = new Intent(MonitoreoSensores.this, Dashboard.class);
+            startActivity(intent);
+        });
+        txtNavBarInicio.setOnClickListener(view -> {
+            Intent intent = new Intent(MonitoreoSensores.this, Dashboard.class);
+            startActivity(intent);
+        });
+
+        navBarUser.setOnClickListener(view -> {
+            Intent intent = new Intent(MonitoreoSensores.this, DashboardUsuario.class);
+            startActivity(intent);
+        });
+        txtNavBarUser.setOnClickListener(view -> {
+            Intent intent = new Intent(MonitoreoSensores.this, DashboardUsuario.class);
+            startActivity(intent);
+        });
+
+        navBarSensor.setOnClickListener(view -> {
+            Intent intent = new Intent(MonitoreoSensores.this, MonitoreoSensores.class);
+            startActivity(intent);
+        });
+        txtNavBarSensor.setOnClickListener(view -> {
+            Intent intent = new Intent(MonitoreoSensores.this, MonitoreoSensores.class);
+            startActivity(intent);
+        });
+
+        navBarGit.setOnClickListener(view -> {
+            String url = "https://github.com/Anaguirv/appMovil";
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+            startActivity(intent);
+        });
+        // navBar END
 
         fechahora.setText(fechahora());
         datos = Volley.newRequestQueue(this);
