@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,8 +28,9 @@ public class Dashboard extends AppCompatActivity {
     private final Handler mHandler = new Handler();
     // navBar start
     private LinearLayout containerNavBarInicio, containerNavBarUser, containerNavBarSensor;
-    private ImageView navBarGit;
+    private ImageView navBarGit, imglogo;
     // navBar end
+
 
 
     @SuppressLint("MissingInflatedId")
@@ -43,6 +46,7 @@ public class Dashboard extends AppCompatActivity {
             return insets;
         });
 
+
         // Obtener el correo desde el Intent
         Intent intent = getIntent();
         String correo = intent.getStringExtra("correo");
@@ -50,6 +54,7 @@ public class Dashboard extends AppCompatActivity {
         // Crear relación entre parte gráfica y lógica
         txtFecha = findViewById(R.id.txt_fecha);
         txtUsuario = findViewById(R.id.txt_usuario);
+        imglogo = findViewById(R.id.imglogo);
 
         //navBar
         navBarGit = findViewById(R.id.navBarGit);
@@ -57,6 +62,9 @@ public class Dashboard extends AppCompatActivity {
         containerNavBarInicio = findViewById(R.id.containerNavBarInicio);
         containerNavBarUser = findViewById(R.id.containerNavBarUser);
         //navBar end
+
+        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        imglogo.startAnimation(rotateAnimation);
 
         //navBar Funcionalidad
         containerNavBarInicio.setOnClickListener(view -> {
