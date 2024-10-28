@@ -3,7 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="purple">#7738c8</color>
-
-
+    <color name="fondoMenu">#292637</color>
     <color name="botonIngreso">#673AB7</color>
+    <color name="cardFondo">#eee</color>
 </resources>

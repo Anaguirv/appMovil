@@ -2,53 +2,65 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/menuUsuario"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#eee"
     tools:context=".DashboardUsuario">
 
 
-    <ImageView
-        android:id="@+id/imglogo"
-        android:layout_width="131dp"
-        android:layout_height="110dp"
-        android:layout_marginTop="8dp"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/navBarBottom"
+        android:layout_width="415dp"
+        android:layout_height="54dp"
+        android:background="@color/fondoMenu"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/navBArTop"
+        android:layout_width="444dp"
+        android:layout_height="54dp"
+        android:background="@color/fondoMenu"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/light" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tituloMenuUsuario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="9dp"
         android:text="Menu Usuarios"
-        android:textColor="@color/black"
-        android:textSize="34sp"
+        android:textColor="@color/ic_launcher_background"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imglogo" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageView7"
         android:layout_width="89dp"
         android:layout_height="96dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="92dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tituloMenuUsuario"
+        app:layout_constraintTop_toBottomOf="@+id/navBArTop"
         app:srcCompat="@drawable/user" />
 
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="89dp"
         android:layout_height="86dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="92dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtlistar"
@@ -75,4 +87,96 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+    <ImageView
+        android:id="@+id/navBarInicio"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="56dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/navBarBottom"
+        app:layout_constraintVertical_bias="0.21"
+        app:srcCompat="@drawable/home" />
+
+    <ImageView
+        android:id="@+id/navBarGit"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.835"
+        app:layout_constraintStart_toEndOf="@+id/tituloMenuUsuario"
+        app:layout_constraintTop_toTopOf="@+id/navBArTop"
+        app:srcCompat="@drawable/github" />
+
+    <ImageView
+        android:id="@+id/navBarCongif"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="14dp"
+        app:layout_constraintEnd_toStartOf="@+id/tituloMenuUsuario"
+        app:layout_constraintHorizontal_bias="0.158"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/navBArTop"
+        app:srcCompat="@drawable/cog" />
+
+    <ImageView
+        android:id="@+id/navBarUser"
+        android:layout_width="26dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintEnd_toStartOf="@+id/navBarSensor"
+        app:layout_constraintHorizontal_bias="0.556"
+        app:layout_constraintStart_toEndOf="@+id/navBarInicio"
+        app:layout_constraintTop_toTopOf="@+id/navBarBottom"
+        app:srcCompat="@drawable/userico" />
+
+    <ImageView
+        android:id="@+id/navBarSensor"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="76dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/navBarBottom"
+        app:layout_constraintVertical_bias="0.076"
+        app:srcCompat="@drawable/chip" />
+
+    <TextView
+        android:id="@+id/txtNavBarInicio"
+        android:layout_width="48dp"
+        android:layout_height="17dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="4dp"
+        android:text="Inicio"
+        android:textAlignment="center"
+        android:textColor="#eee"
+        app:layout_constraintStart_toStartOf="@+id/navBarBottom"
+        app:layout_constraintTop_toBottomOf="@+id/navBarInicio" />
+
+    <TextView
+        android:id="@+id/txtNavBarUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Usuarios"
+        android:textAlignment="center"
+        android:textColor="#eee"
+        app:layout_constraintEnd_toStartOf="@+id/txtNavBarSensor"
+        app:layout_constraintHorizontal_bias="0.605"
+        app:layout_constraintStart_toEndOf="@+id/txtNavBarInicio"
+        app:layout_constraintTop_toBottomOf="@+id/navBarUser" />
+
+    <TextView
+        android:id="@+id/txtNavBarSensor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="56dp"
+        android:text="Sensores"
+        android:textColor="#eee"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/navBarSensor" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
