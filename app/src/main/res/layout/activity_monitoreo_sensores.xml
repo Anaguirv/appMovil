@@ -11,42 +11,6 @@
     tools:layout_editor_absoluteY="25dp">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/navBarBottom"
-        android:layout_width="415dp"
-        android:layout_height="54dp"
-        android:background="@color/fondoMenu"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/navBarSensor"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="76dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/navBarBottom"
-        app:layout_constraintVertical_bias="0.076"
-        app:srcCompat="@drawable/chip" />
-
-    <TextView
-        android:id="@+id/txtNavBarInicio"
-        android:layout_width="48dp"
-        android:layout_height="17dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="4dp"
-        android:text="Inicio"
-        android:textAlignment="center"
-        android:textColor="#eee"
-        app:layout_constraintStart_toStartOf="@+id/navBarBottom"
-        app:layout_constraintTop_toBottomOf="@+id/navBarInicio" />
-
-    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/navBArTop"
         android:layout_width="444dp"
         android:layout_height="54dp"
@@ -56,52 +20,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/txtNavBarUser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Usuarios"
-        android:textAlignment="center"
-        android:textColor="#eee"
-        app:layout_constraintEnd_toStartOf="@+id/txtNavBarSensor"
-        app:layout_constraintHorizontal_bias="0.605"
-        app:layout_constraintStart_toEndOf="@+id/txtNavBarInicio"
-        app:layout_constraintTop_toBottomOf="@+id/navBarUser" />
-
-    <ImageView
-        android:id="@+id/navBarInicio"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="56dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/navBarBottom"
-        app:layout_constraintVertical_bias="0.21"
-        app:srcCompat="@drawable/home" />
-
-    <ImageView
-        android:id="@+id/navBarUser"
-        android:layout_width="26dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="6dp"
-        app:layout_constraintEnd_toStartOf="@+id/navBarSensor"
-        app:layout_constraintHorizontal_bias="0.556"
-        app:layout_constraintStart_toEndOf="@+id/navBarInicio"
-        app:layout_constraintTop_toTopOf="@+id/navBarBottom"
-        app:srcCompat="@drawable/userico" />
-
-    <TextView
-        android:id="@+id/txtNavBarSensor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="56dp"
-        android:text="Sensores"
-        android:textColor="#eee"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/navBarSensor" />
 
     <ImageView
         android:id="@+id/navBarGit"
@@ -214,4 +132,100 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView11"
         app:srcCompat="@drawable/luzoff" />
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/navBarBottom"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:background="@color/fondoMenu"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <LinearLayout
+                android:id="@+id/containerNavBarInicio"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/navBarInicio"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="5dp"
+                    app:srcCompat="@drawable/home" />
+
+                <TextView
+                    android:id="@+id/txtNavBarInicio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="Inicio"
+                    android:textAlignment="center"
+                    android:textColor="#eee" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/containerNavBarUser"
+                android:layout_width="8dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/navBarUser"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="5dp"
+                    app:srcCompat="@drawable/userico" />
+
+                <TextView
+                    android:id="@+id/txtNavBarUser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="Usuarios"
+                    android:textAlignment="center"
+                    android:textColor="#eee" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/containerNavBarSensor"
+                android:layout_width="31dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/navBarSensor"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="5dp"
+                    app:srcCompat="@drawable/chip" />
+
+                <TextView
+                    android:id="@+id/txtNavBarSensor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="Sensores"
+                    android:textAlignment="center"
+                    android:textColor="#eee" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </com.google.android.material.appbar.MaterialToolbar>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

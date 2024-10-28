@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -21,11 +22,12 @@ import java.util.Locale;
 public class Dashboard extends AppCompatActivity {
     // Atributos
     TextView txtFecha, txtUsuario;
-    private TextView txtSensores, txtUsuarios, txtRegistroMedicion;
+    private LinearLayout containerUsuarios, containerSensores, containerRegistroMedicion;
     private final Handler mHandler = new Handler();
-
-    private ImageView navBarInicio, navBarUser, navBarSensor, navBarGit;
-    private TextView txtNavBarInicio, txtNavBarUser, txtNavBarSensor;
+    // navBar start
+    private LinearLayout containerNavBarInicio, containerNavBarUser, containerNavBarSensor;
+    private ImageView navBarGit;
+    // navBar end
 
 
     @SuppressLint("MissingInflatedId")
@@ -51,38 +53,27 @@ public class Dashboard extends AppCompatActivity {
 
         //navBar
         navBarGit = findViewById(R.id.navBarGit);
-        navBarSensor = findViewById(R.id.navBarSensor);
-        navBarUser = findViewById(R.id.navBarUser);
-        navBarInicio = findViewById(R.id.navBarInicio);
-        txtNavBarSensor = findViewById(R.id.txtNavBarSensor);
-        txtNavBarUser = findViewById(R.id.txtNavBarUser);
-        txtNavBarInicio = findViewById(R.id.txtNavBarInicio);
+        containerNavBarSensor = findViewById(R.id.containerNavBarSensor);
+        containerNavBarInicio = findViewById(R.id.containerNavBarInicio);
+        containerNavBarUser = findViewById(R.id.containerNavBarUser);
         //navBar end
-        // Funcionalidad navBar
-        navBarInicio.setOnClickListener(view -> {
+
+        //navBar Funcionalidad
+        containerNavBarInicio.setOnClickListener(view -> {
             Intent intent2 = new Intent(Dashboard.this, Dashboard.class);
-            startActivity(intent2);
-        });
-        txtNavBarInicio.setOnClickListener(view -> {
-            Intent intent2 = new Intent(Dashboard.this, Dashboard.class);
+            intent2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent2);
         });
 
-        navBarUser.setOnClickListener(view -> {
+        containerNavBarUser.setOnClickListener(view -> {
             Intent intent2 = new Intent(Dashboard.this, DashboardUsuario.class);
-            startActivity(intent2);
-        });
-        txtNavBarUser.setOnClickListener(view -> {
-            Intent intent2 = new Intent(Dashboard.this, DashboardUsuario.class);
+            intent2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent2);
         });
 
-        navBarSensor.setOnClickListener(view -> {
+        containerNavBarSensor.setOnClickListener(view -> {
             Intent intent2 = new Intent(Dashboard.this, MonitoreoSensores.class);
-            startActivity(intent2);
-        });
-        txtNavBarSensor.setOnClickListener(view -> {
-            Intent intent2 = new Intent(Dashboard.this, MonitoreoSensores.class);
+            intent2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent2);
         });
 
@@ -98,25 +89,25 @@ public class Dashboard extends AppCompatActivity {
         txtUsuario.setText(correo);
         mHandler.post(actualizarFechaRunnable);
 
-        txtSensores = findViewById(R.id.txtSensores);
-        txtUsuarios = findViewById(R.id.txtUsuarios);
-        txtRegistroMedicion = findViewById(R.id.txt_registro_medicion);
+        containerSensores = findViewById(R.id.containerSensores);
+        containerUsuarios = findViewById(R.id.containerUsuarios);
+        containerRegistroMedicion = findViewById(R.id.containerRegistroMedicion);
 
 
         // Configurar escuchador para ir a Activity Sensores
-        txtSensores.setOnClickListener(view -> {
+        containerSensores.setOnClickListener(view -> {
             Intent ventanaSensores = new Intent(Dashboard.this, MonitoreoSensores.class);
             startActivity(ventanaSensores);
         });
 
         // Configurar escuchador para ir a Activity Usuarios
-        txtUsuarios.setOnClickListener(view -> {
+        containerUsuarios.setOnClickListener(view -> {
             Intent ventanaUsuarios = new Intent(Dashboard.this, DashboardUsuario.class);
             startActivity(ventanaUsuarios);
         });
 
         // Configurar escuchador para ir a Activity RegistroMedicion
-        txtRegistroMedicion.setOnClickListener(view -> {
+        containerRegistroMedicion.setOnClickListener(view -> {
             Intent ventanaRegistroMedicion = new Intent(Dashboard.this, RegistroMedicion.class);
             startActivity(ventanaRegistroMedicion);
         });
