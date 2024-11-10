@@ -8,64 +8,53 @@
     android:layout_height="match_parent"
     tools:context=".RegistroMedicion">
 
-  <TextView
-      android:id="@+id/titulo_reg_med"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="16dp"
-      android:text="@string/seleccionar_alumbrado"
-      android:textSize="24sp"
+  <!-- Barra superior de navegación -->
+  <com.google.android.material.appbar.MaterialToolbar
+      android:id="@+id/navBArTop"
+      android:layout_width="match_parent"
+      android:layout_height="54dp"
+      android:background="@color/fondoMenu"
+      android:minHeight="?attr/actionBarSize"
+      android:theme="?attr/actionBarTheme"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.494"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
-  <TextView
-      android:id="@+id/tipo_alumbrado_art5"
+  <!-- Lista de Proyectos -->
+  <ListView
+      android:id="@+id/listViewProyectos"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:divider="@android:color/darker_gray"
+      android:dividerHeight="1dp"
+      android:padding="8dp"
+      app:layout_constraintTop_toBottomOf="@id/navBArTop"
+      app:layout_constraintBottom_toTopOf="@id/navBarBottom"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"/>
+
+  <!-- Barra inferior de navegación -->
+  <com.google.android.material.appbar.MaterialToolbar
+      android:id="@+id/navBarBottom"
+      android:layout_width="match_parent"
+      android:layout_height="54dp"
+      android:background="@color/fondoMenu"
+      android:minHeight="?attr/actionBarSize"
+      android:theme="?attr/actionBarTheme"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
+
+  <!-- Botón para abrir Medición (Oculto) -->
+  <Button
+      android:id="@+id/openMedicionButton"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="80dp"
-      android:text="@string/alumbrado_art5"
-      android:textSize="20sp"
+      android:text="Abrir Medición"
+      app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.496"
+      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/titulo_reg_med" />
+      android:visibility="gone" />
 
-
-  <TextView
-      android:id="@+id/tipo_alumbrado_art6"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="37dp"
-      android:text="@string/alumbrado_art6"
-      android:textSize="20sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.497"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/tipo_alumbrado_art5" />
-
-  <TextView
-      android:id="@+id/tipo_alumbrado_art7"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="37dp"
-      android:text="@string/alumbrado_art7"
-      android:textSize="20sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.497"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/tipo_alumbrado_art6" />
-
-  <TextView
-      android:id="@+id/tipo_alumbrado_art8"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="37dp"
-      android:text="@string/alumbrado_art8"
-      android:textSize="20sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.497"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/tipo_alumbrado_art7" />
 </androidx.constraintlayout.widget.ConstraintLayout>
