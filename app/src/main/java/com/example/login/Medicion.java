@@ -2,13 +2,14 @@ package com.example.login;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;  // Asegúrate de que esta importación esté presente
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,6 +25,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -41,6 +43,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Medicion extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -48,60 +51,54 @@ public class Medicion extends AppCompatActivity implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 2;
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
-    private ImageView imageView1, imageView2;
-    private Button btnDeletePhoto1, btnDeletePhoto2;
-    private int imageCount = 0;
 
     private TextView textProyectoValor;
+    private EditText editTextTemperatura, editTextHumedad, editTextValorMedido, editTextObservacion;
     private Spinner spinnerInstrumento;
-    private RequestQueue requestQueue;
-    private String url = "http://52.71.115.13/ConsutarInstrumentoMedicion.php";
+    private ImageView imageView1, imageView2;
+    private Button btnDeletePhoto1, btnDeletePhoto2;
 
-    // Variables para almacenar los IDs
+    private RequestQueue requestQueue;
+    private String urlInstrumentos = "http://52.71.115.13/ConsutarInstrumentoMedicion.php";
+    private String urlGuardarMedicion = "http://52.71.115.13/GuardarMedicion.php";
+
     private HashMap<Integer, String> instrumentoMap = new HashMap<>();
-    private String proyectoId;  // Almacena el ID del proyecto recibido
-    private String proyecto_nombre;  // Almacena el ID del proyecto recibido
+    private String proyectoId;
+    private LatLng selectedLocation;
+
+    private int imageCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medicion);
 
-        // Obtener el nombre y el ID del proyecto desde el Intent
         Intent intent = getIntent();
-        String proyecto_nombre = intent.getStringExtra("proyecto_nombre");
-        proyectoId = intent.getStringExtra("proyecto_id");  // ID del proyecto
+        proyectoId = intent.getStringExtra("proyecto_id");
+        String proyectoNombre = intent.getStringExtra("proyecto_nombre");
 
-        // Mostrar el nombre del proyecto en el TextView
         textProyectoValor = findViewById(R.id.textProyectoValor);
-        textProyectoValor.setText(proyecto_nombre);
+        textProyectoValor.setText(proyectoNombre);
 
-        // Configurar el Spinner de Instrumento y cargar los datos
+        editTextTemperatura = findViewById(R.id.editTextTemperatura);
+        editTextHumedad = findViewById(R.id.editTextHumedad);
+        editTextValorMedido = findViewById(R.id.medicion_input);
+        editTextObservacion = findViewById(R.id.editTextObservaciones);
         spinnerInstrumento = findViewById(R.id.spinnerInstrumento);
-        requestQueue = Volley.newRequestQueue(this);
-        loadInstrumentData();
-
-        Button btnTomarFoto = findViewById(R.id.btnTomarFoto);
         imageView1 = findViewById(R.id.imageView1);
         imageView2 = findViewById(R.id.imageView2);
         btnDeletePhoto1 = findViewById(R.id.btnDeletePhoto1);
         btnDeletePhoto2 = findViewById(R.id.btnDeletePhoto2);
 
-        // Ocultar los botones de eliminar imagen al inicio
-        btnDeletePhoto1.setVisibility(View.GONE);
-        btnDeletePhoto2.setVisibility(View.GONE);
+        requestQueue = Volley.newRequestQueue(this);
+        loadInstrumentData();
 
-        // Inicializar el mapa
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapContainer);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
-        }
+        Button btnGuardarMedicion = findViewById(R.id.btnguardarmedicion);
+        btnGuardarMedicion.setOnClickListener(v -> guardarMedicion());
 
-        // Configurar el botón para tomar fotos
+        Button btnTomarFoto = findViewById(R.id.btnTomarFoto);
         btnTomarFoto.setOnClickListener(v -> dispatchTakePictureIntent());
 
-        // Configurar los botones para eliminar fotos
         btnDeletePhoto1.setOnClickListener(v -> {
             imageView1.setImageBitmap(null);
             btnDeletePhoto1.setVisibility(View.GONE);
@@ -113,9 +110,97 @@ public class Medicion extends AppCompatActivity implements OnMapReadyCallback {
             btnDeletePhoto2.setVisibility(View.GONE);
             imageCount = 1;
         });
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapContainer);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
     }
 
-    // Método para capturar fotos
+    private void loadInstrumentData() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlInstrumentos, null,
+                response -> {
+                    ArrayList<String> instrumentos = new ArrayList<>();
+                    instrumentos.add("Seleccione un instrumento");
+                    instrumentoMap.put(0, null);
+
+                    try {
+                        for (int i = 0; i < response.length(); i++) {
+                            JSONObject instrumento = response.getJSONObject(i);
+                            String id = instrumento.getString("id");
+                            String descripcion = instrumento.getString("nombre_instrumento");
+                            instrumentos.add(descripcion);
+                            instrumentoMap.put(i + 1, id);
+                        }
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(Medicion.this, android.R.layout.simple_spinner_item, instrumentos);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinnerInstrumento.setAdapter(adapter);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(Medicion.this, "Error al procesar datos JSON", Toast.LENGTH_SHORT).show();
+                    }
+                }, error -> Toast.makeText(Medicion.this, "Error de conexión", Toast.LENGTH_SHORT).show());
+
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    private void guardarMedicion() {
+        String instrumentoId = getSelectedInstrumentId();
+        String temperatura = editTextTemperatura.getText().toString();
+        String humedad = editTextHumedad.getText().toString();
+        String valorMedido = editTextValorMedido.getText().toString();
+        String observacion = editTextObservacion.getText().toString();
+
+        if (selectedLocation == null) {
+            Toast.makeText(this, "Seleccione una ubicación en el mapa", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String latitud = String.valueOf(selectedLocation.latitude);
+        String longitud = String.valueOf(selectedLocation.longitude);
+
+        if (instrumentoId == null || proyectoId == null) {
+            Toast.makeText(this, "Complete todos los campos y seleccione ubicación", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, urlGuardarMedicion,
+                response -> {
+                    Toast.makeText(Medicion.this, "Medición guardada exitosamente", Toast.LENGTH_SHORT).show();
+                    // Redirigir a RegistroMedicion después de guardar con éxito
+                    Intent intent = new Intent(Medicion.this, RegistroMedicion.class);
+                    startActivity(intent);
+                    finish();  // Cierra la actividad actual para evitar volver atrás
+                },
+                error -> Toast.makeText(Medicion.this, "Error al guardar medición", Toast.LENGTH_SHORT).show()) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("latitud", latitud);
+                params.put("longitud", longitud);
+                params.put("temperatura", temperatura);
+                params.put("humedad", humedad);
+                params.put("valor_medido", valorMedido);
+                params.put("observacion", observacion);
+                params.put("inspector_id", "1");
+                params.put("instrumento_medicion_id", instrumentoId);
+                params.put("proyecto_id", proyectoId);
+                return params;
+            }
+        };
+
+        requestQueue.add(stringRequest);
+    }
+
+
+    private String getSelectedInstrumentId() {
+        int position = spinnerInstrumento.getSelectedItemPosition();
+        return instrumentoMap.get(position);
+    }
+
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -129,7 +214,6 @@ public class Medicion extends AppCompatActivity implements OnMapReadyCallback {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null) {
             Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
 
-            // Configuración de las imágenes en los ImageView correspondientes
             if (imageCount == 0) {
                 imageView1.setImageBitmap(imageBitmap);
                 btnDeletePhoto1.setVisibility(View.VISIBLE);
@@ -142,43 +226,27 @@ public class Medicion extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
 
-    // Método para configurar el mapa
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Configuración de controles del mapa
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setZoomGesturesEnabled(true);
-        mMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(true);
-        mMap.getUiSettings().setRotateGesturesEnabled(true);
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
-        // Listener para cambiar el marcador en el mapa
-        mMap.setOnMapClickListener(latLng -> setMarkerAtLocation(latLng));
+        mMap.setOnMapClickListener(latLng -> {
+            selectedLocation = latLng;
+            setMarkerAtLocation(latLng);
+        });
+
         enableUserLocation();
     }
 
-    private void setMarkerAtLocation(LatLng latLng) {
-        if (mMap != null) {
-            mMap.clear();
-            mMap.addMarker(new MarkerOptions().position(latLng).title("Ubicación actual"));
-            mMap.addCircle(new CircleOptions()
-                    .center(latLng)
-                    .radius(10)
-                    .strokeColor(0x220000FF)
-                    .fillColor(0x220000FF));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 19f));
-        }
-    }
-
-    // Habilitar la ubicación del usuario
     private void enableUserLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
             fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
                 if (location != null) {
                     LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                    selectedLocation = currentLocation;
                     setMarkerAtLocation(currentLocation);
                 }
             });
@@ -187,72 +255,21 @@ public class Medicion extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
 
+    private void setMarkerAtLocation(LatLng latLng) {
+        if (mMap != null) {
+            mMap.clear();
+            mMap.addMarker(new MarkerOptions().position(latLng).title("Ubicación seleccionada"));
+            mMap.addCircle(new CircleOptions().center(latLng).radius(10).strokeColor(0x220000FF).fillColor(0x220000FF));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 19f));
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 enableUserLocation();
             }
-        }
-    }
-
-    private void loadInstrumentData() {
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        ArrayList<String> instrumentos = new ArrayList<>();
-                        instrumentos.add("Seleccione un instrumento");
-                        instrumentoMap.put(0, null);
-
-                        try {
-                            for (int i = 0; i < response.length(); i++) {
-                                JSONObject instrumento = response.getJSONObject(i);
-                                String id = instrumento.getString("id");
-                                String descripcion = instrumento.getString("nombre_instrumento");  // Usa "nombre_instrumento" en lugar de "marca" y "modelo"
-
-                                instrumentos.add(descripcion);
-                                instrumentoMap.put(i + 1, id);
-                            }
-
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(Medicion.this, android.R.layout.simple_spinner_item, instrumentos);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            spinnerInstrumento.setAdapter(adapter);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(Medicion.this, "Error al procesar datos JSON", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(Medicion.this, "Error de conexión: " + error.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-
-        requestQueue.add(jsonArrayRequest);
-    }
-
-
-
-    // Obtener el ID del instrumento seleccionado
-    private String getSelectedInstrumentId() {
-        int position = spinnerInstrumento.getSelectedItemPosition();
-        return instrumentoMap.get(position);
-    }
-
-    // Método para guardar la medición con proyectoId e instrumentoId (pendiente de implementación)
-    private void saveMedicion() {
-        String instrumentoId = getSelectedInstrumentId();
-
-        // Comentario: Utilizar proyectoId e instrumentoId para guardar la medición en la base de datos
-        if (proyectoId != null && instrumentoId != null) {
-            // TODO: Implementar guardado en la base de datos usando proyectoId e instrumentoId
-            Toast.makeText(this, "Guardando con Proyecto ID: " + proyectoId + ", Instrumento ID: " + instrumentoId, Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, "Seleccione un instrumento", Toast.LENGTH_SHORT).show();
         }
     }
 }
