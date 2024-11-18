@@ -3,10 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/medicion"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#eee"
     tools:context=".Medicion">
 
     <!-- Barra superior de navegación -->
@@ -64,7 +63,6 @@
                 android:layout_height="wrap_content"
                 android:prompt="@string/spinner_prompt" />
 
-
             <!-- Sección para Temperatura -->
             <TextView
                 android:id="@+id/textViewTemperatura"
@@ -77,7 +75,8 @@
                 android:id="@+id/editTextTemperatura"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ingrese Valor" />
+                android:hint="Ingrese Valor"
+                android:inputType="numberDecimal" />
 
             <!-- Sección para Humedad -->
             <TextView
@@ -91,7 +90,8 @@
                 android:id="@+id/editTextHumedad"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ingrese Valor" />
+                android:hint="Ingrese Valor"
+                android:inputType="numberDecimal" />
 
             <!-- Campo de Medición -->
             <TextView
@@ -108,13 +108,19 @@
                 android:hint="Ingrese la medición"
                 android:inputType="numberDecimal" />
 
-            <!-- Botón de tomar foto -->
-            <Button
-                android:id="@+id/btnTomarFoto"
-                android:layout_width="wrap_content"
+            <!-- Botón de tomar foto centrado debajo del último valor -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Tomar Foto" />
+                android:gravity="center"
+                android:layout_marginTop="16dp">
+
+                <Button
+                    android:id="@+id/btnTomarFoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tomar Foto" />
+            </LinearLayout>
 
             <!-- Contenedor para mostrar las imágenes y los botones de eliminar -->
             <LinearLayout
@@ -130,42 +136,19 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <ImageView
-                        android:id="@+id/imageView1"
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:scaleType="centerCrop"
-                        android:layout_gravity="center" />
-
-                    <Button
-                        android:id="@+id/btnDeletePhoto1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|bottom"
-                        android:layout_margin="8dp"
-                        android:text="Eliminar" />
                 </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop" />
 
                 <FrameLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                    <ImageView
-                        android:id="@+id/imageView2"
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:scaleType="centerCrop"
-                        android:layout_gravity="center" />
-
-                    <Button
-                        android:id="@+id/btnDeletePhoto2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|bottom"
-                        android:layout_margin="8dp"
-                        android:text="Eliminar" />
-                </FrameLayout>
+                    android:layout_weight="1"/>
             </LinearLayout>
 
             <!-- Sección del mapa -->
@@ -195,15 +178,22 @@
                 android:id="@+id/editTextObservaciones"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ingrese Observación" />
+                android:hint="Ingrese Observación"
+                android:inputType="text" />
 
-            <!-- Botón de Guardar al final -->
-            <Button
-                android:id="@+id/btnguardarmedicion"
-                android:layout_width="wrap_content"
+            <!-- Botón de Guardar centrado debajo de Observaciones -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Guardar" />
+                android:gravity="center"
+                android:layout_marginTop="16dp">
+
+                <Button
+                    android:id="@+id/btnguardarmedicion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Guardar" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DetalleProyecto">
+
+    <!-- ImageView para mostrar la foto tomada -->
+
+    <!-- Botón para tomar la foto -->
+
+    <ImageView
+        android:id="@+id/imageViewFoto"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="16dp"
+        android:background="#E0E0E0"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="2dp" />
+
+    <Button
+        android:id="@+id/btnTomarFoto"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Tomar Foto"
+        app:layout_constraintTop_toBottomOf="@id/imageViewFoto"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btnEliminarFoto"
+        android:layout_margin="16dp"/>
+
+    <!-- Botón para eliminar la foto -->
+    <Button
+        android:id="@+id/btnEliminarFoto"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Eliminar Foto"
+        app:layout_constraintTop_toBottomOf="@id/btnTomarFoto"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btnGuardarFoto"
+        android:layout_margin="8dp"/>
+
+    <!-- Botón para guardar la foto -->
+    <Button
+        android:id="@+id/btnGuardarFoto"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Guardar Foto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnEliminarFoto" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

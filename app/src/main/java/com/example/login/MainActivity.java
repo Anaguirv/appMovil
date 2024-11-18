@@ -1,6 +1,8 @@
 package com.example.login;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -125,11 +127,23 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            if (result.equals("Login exitoso. Usuario encontrado.")) {
-                Intent ventanaingresar = new Intent(MainActivity.this, Dashboard.class);
-                ventanaingresar.putExtra("correo", emailIngresado); // Agrega el correo al intent
-                startActivity(ventanaingresar);
-            } else {
+            try {
+                // Intenta convertir el resultado a un número para verificar que es un ID válido
+                int id = Integer.parseInt(result);
+
+                // Guardar el ID en SharedPreferences
+                SharedPreferences sharedPref = getSharedPreferences("InspectorPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt("inspector_id", id);
+                editor.apply();
+
+                // Navegar a Dashboard
+                Intent ventanaDashboard = new Intent(MainActivity.this, Dashboard.class);
+                ventanaDashboard.putExtra("correo", emailIngresado); // Agrega el correo al intent
+                startActivity(ventanaDashboard);
+
+            } catch (NumberFormatException e) {
+                // Si no es un ID válido, muestra un mensaje de error
                 Toast.makeText(MainActivity.this, "Usuario no registrado o datos incorrectos.", Toast.LENGTH_LONG).show();
             }
         }
