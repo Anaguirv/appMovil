@@ -66,7 +66,7 @@ public class Medicion extends AppCompatActivity {
     private Button btnTomarFoto;
 
     private RequestQueue requestQueue;
-    private String urlInstrumentos = "http://52.71.115.13/ConsutarInstrumentoMedicion.php";
+    private String urlInstrumentos = "http://98.83.4.206:8080/ApiInstrumentoMedicion";
     private String urlGuardarMedicion = "http://52.71.115.13/GuardarMedicion.php";
     private String urlUploadPhoto = "http://52.71.115.13/upload.php";
 

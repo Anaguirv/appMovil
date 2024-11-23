@@ -10,12 +10,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -62,7 +64,7 @@ public class RegistroMedicion extends AppCompatActivity {
 
                 // Concatenar tipo_lampara y cantidad para mostrar en un solo TextView
                 String tipoLamparaConCantidad = proyecto.get("tipo_lampara") + " " + proyecto.get("cantidad");
-                tipoLampara.setText(tipoLamparaConCantidad); // Ejemplo: "poste 3"
+                tipoLampara.setText(tipoLamparaConCantidad); //
 
                 return convertView;
             }
@@ -84,40 +86,59 @@ public class RegistroMedicion extends AppCompatActivity {
 
     // Función para cargar los proyectos desde la API
     private void cargarProyectos() {
-        String url = "http://52.71.115.13/ConsultarProyectos.php";
+        String url = "http://98.83.4.206:8080/ApiProyecto";
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
+        Log.d("RegistroMedicion", "Iniciando solicitud a la URL: " + url);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONArray response) {
+                    public void onResponse(JSONObject response) {
+                        Log.d("RegistroMedicion", "Respuesta recibida del servidor");
                         listaProyectos.clear();
                         try {
-                            for (int i = 0; i < response.length(); i++) {
-                                JSONObject proyecto = response.getJSONObject(i);
+                            JSONArray proyectosArray = response.getJSONArray("proyectos");
+                            Log.d("RegistroMedicion", "Número de proyectos recibidos: " + proyectosArray.length());
+
+                            for (int i = 0; i < proyectosArray.length(); i++) {
+                                JSONObject proyecto = proyectosArray.getJSONObject(i);
                                 HashMap<String, String> proyectoMap = new HashMap<>();
                                 proyectoMap.put("id", proyecto.getString("id"));
                                 proyectoMap.put("nombre", proyecto.getString("nombre"));
-                                proyectoMap.put("representante_legal", proyecto.optString("representante_legal", "No asignado")); // Obtiene el nombre completo del representante legal
-                                proyectoMap.put("tipo_alumbrado", proyecto.getString("tipo_alumbrado"));
-                                proyectoMap.put("tipo_lampara", proyecto.optString("tipo_lampara", "N/A")); // Agregar tipo de lámpara
-                                proyectoMap.put("cantidad", proyecto.optString("cantidad", "0")); // Agregar cantidad
+                                proyectoMap.put("representante_legal", proyecto.optString("representante_legal_id", "No asignado"));
+                                proyectoMap.put("tipo_alumbrado", proyecto.optString("tipo_alumbrado", "No especificado"));
+                                proyectoMap.put("tipo_lampara", proyecto.optString("detalle_luminarias_id", "N/A"));
+                                proyectoMap.put("cantidad", "N/A"); // Valor predeterminado para cantidad
+
+                                Log.d("RegistroMedicion", "Proyecto añadido: " + proyectoMap.toString());
                                 listaProyectos.add(proyectoMap);
                             }
-                            // Notificar cambios al adaptador
+
                             ((ArrayAdapter) listViewProyectos.getAdapter()).notifyDataSetChanged();
+                            Log.d("RegistroMedicion", "Adaptador actualizado con los proyectos.");
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            Log.e("RegistroMedicion", "Error al procesar JSON: " + e.getMessage(), e);
                             Toast.makeText(RegistroMedicion.this, "Error al procesar datos JSON", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(RegistroMedicion.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                Log.e("RegistroMedicion", "Error de conexión: " + error.getMessage(), error);
+
+                // Extraer más información si es posible
+                if (error.networkResponse != null) {
+                    Log.e("RegistroMedicion", "Código de respuesta HTTP: " + error.networkResponse.statusCode);
+                    Log.e("RegistroMedicion", "Datos de respuesta: " + new String(error.networkResponse.data));
+                }
+
+                Toast.makeText(RegistroMedicion.this, "Error de conexión: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(jsonArrayRequest);
+        requestQueue.add(jsonObjectRequest);
+        Log.d("RegistroMedicion", "Solicitud añadida a la cola.");
     }
+
 }

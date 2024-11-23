@@ -3,7 +3,6 @@ package com.example.login;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,16 +10,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,13 +38,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.dashboard), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         txtmsj = findViewById(R.id.txtmensaje);
         btningresar = findViewById(R.id.btningresar);
@@ -90,62 +88,58 @@ public class MainActivity extends AppCompatActivity {
         return matcher.matches();
     }
 
-    // Método para verificar usuario en la base de datos
+    // Método para verificar usuario en la base de datos utilizando Volley con POST
     private void verificarUsuario(String usuario, String clave) {
-        String url = "http://52.71.115.13/consultarUsuario.php?correo=" + usuario + "&clave=" + clave;
-        new VerificarUsuarioTask(usuario).execute(url);
-    }
+        String url = "http://98.83.4.206:8080/ApiLogin";
 
-    // Clase interna para manejar la solicitud en segundo plano
-    private class VerificarUsuarioTask extends AsyncTask<String, Void, String> {
-        private final String emailIngresado;
-
-        // Constructor para inicializar el email
-        public VerificarUsuarioTask(String emailIngresado) {
-            this.emailIngresado = emailIngresado;
+        // Crear el cuerpo de la solicitud como JSON
+        JSONObject params = new JSONObject();
+        try {
+            params.put("correo", usuario);
+            params.put("clave", clave);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(MainActivity.this, "Error al construir los parámetros.", Toast.LENGTH_LONG).show();
+            return;
         }
 
-        @Override
-        protected String doInBackground(String... urls) {
-            StringBuilder result = new StringBuilder();
-            try {
-                URL url = new URL(urls[0]);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
+        // Crear la solicitud POST usando Volley
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            // Procesar la respuesta JSON
+                            int id = response.getInt("id");
+                            String correo = response.getString("correo");
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);
-                }
-                reader.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return result.toString();
-        }
+                            // Guardar el ID en SharedPreferences
+                            SharedPreferences sharedPref = getSharedPreferences("InspectorPrefs", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putInt("inspector_id", id);
+                            editor.putString("correo", correo);
+                            editor.apply();
 
-        @Override
-        protected void onPostExecute(String result) {
-            try {
-                // Intenta convertir el resultado a un número para verificar que es un ID válido
-                int id = Integer.parseInt(result);
+                            // Navegar a Dashboard
+                            Intent ventanaDashboard = new Intent(MainActivity.this, Dashboard.class);
+                            ventanaDashboard.putExtra("correo", correo);
+                            startActivity(ventanaDashboard);
 
-                // Guardar el ID en SharedPreferences
-                SharedPreferences sharedPref = getSharedPreferences("InspectorPrefs", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putInt("inspector_id", id);
-                editor.apply();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(MainActivity.this, "Error al procesar la respuesta del servidor.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MainActivity.this, "Contraseña o Correo Incorrecto: " , Toast.LENGTH_LONG).show();
+                    }
+                });
 
-                // Navegar a Dashboard
-                Intent ventanaDashboard = new Intent(MainActivity.this, Dashboard.class);
-                ventanaDashboard.putExtra("correo", emailIngresado); // Agrega el correo al intent
-                startActivity(ventanaDashboard);
-
-            } catch (NumberFormatException e) {
-                // Si no es un ID válido, muestra un mensaje de error
-                Toast.makeText(MainActivity.this, "Usuario no registrado o datos incorrectos.", Toast.LENGTH_LONG).show();
-            }
-        }
+        // Agregar la solicitud a la cola de Volley
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(jsonObjectRequest);
     }
 }
