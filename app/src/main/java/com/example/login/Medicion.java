@@ -27,12 +27,13 @@ import androidx.core.content.FileProvider;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,12 +46,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-
 import java.util.Locale;
 import java.util.Map;
 
@@ -79,7 +78,7 @@ public class Medicion extends AppCompatActivity {
     private Bitmap capturedImage;
     private Uri imageUri;
 
-    private String photoUrl; // Variable para almacenar la URL de la foto subida
+    private String photoUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,21 +112,17 @@ public class Medicion extends AppCompatActivity {
         Button btnGuardarMedicion = findViewById(R.id.btnguardarmedicion);
         btnGuardarMedicion.setOnClickListener(v -> guardarMedicion());
 
-        // Configurar el botón para tomar foto
         btnTomarFoto.setOnClickListener(v -> captureImage());
 
-        // Verificar permisos de cámara
         checkCameraPermission();
 
-        // Configurar el manejo del mapa usando MapHandler
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapContainer);
         mapHandler = new MapHandler(this, mapFragment);
     }
 
     private void checkCameraPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{
                     Manifest.permission.CAMERA,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -139,12 +134,10 @@ public class Medicion extends AppCompatActivity {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             try {
-                // Crear un archivo temporal para almacenar la imagen completa
                 File photoFile = File.createTempFile("captured_image", ".jpg", getCacheDir());
                 imageUri = FileProvider.getUriForFile(
                         this, getApplicationContext().getPackageName() + ".provider", photoFile);
 
-                // Configurar el intent para que use el archivo como destino
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             } catch (IOException e) {
@@ -160,9 +153,8 @@ public class Medicion extends AppCompatActivity {
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             try {
-                // Leer la imagen de alta calidad desde el archivo
                 capturedImage = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                imageView1.setImageBitmap(capturedImage);  // Mostrar la imagen en el ImageView
+                imageView1.setImageBitmap(capturedImage);
             } catch (IOException e) {
                 e.printStackTrace();
                 Toast.makeText(this, "Error al cargar la imagen", Toast.LENGTH_SHORT).show();
@@ -173,20 +165,26 @@ public class Medicion extends AppCompatActivity {
     }
 
     private void loadInstrumentData() {
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlInstrumentos, null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, urlInstrumentos, null,
                 response -> {
                     ArrayList<String> instrumentos = new ArrayList<>();
                     instrumentos.add("Seleccione un instrumento");
                     instrumentoMap.put(0, null);
 
                     try {
-                        for (int i = 0; i < response.length(); i++) {
-                            JSONObject instrumento = response.getJSONObject(i);
-                            String id = instrumento.getString("id");
-                            String descripcion = instrumento.getString("nombre_instrumento");
+                        JSONArray instrumentosArray = response.getJSONArray("instrumentosMedicion");
+                        for (int i = 0; i < instrumentosArray.length(); i++) {
+                            JSONObject instrumento = instrumentosArray.getJSONObject(i);
+                            int id = instrumento.getInt("id");
+                            String marca = instrumento.getString("marca");
+                            String modelo = instrumento.getString("modelo");
+                            String numSerie = instrumento.getString("num_serie");
+
+                            String descripcion = marca + " " + modelo + " (" + numSerie + ")";
                             instrumentos.add(descripcion);
-                            instrumentoMap.put(i + 1, id);
+                            instrumentoMap.put(i + 1, String.valueOf(id));
                         }
+
                         ArrayAdapter<String> adapter = new ArrayAdapter<>(Medicion.this, android.R.layout.simple_spinner_item, instrumentos);
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinnerInstrumento.setAdapter(adapter);
@@ -197,12 +195,18 @@ public class Medicion extends AppCompatActivity {
                         Log.e(TAG, "loadInstrumentData: Error al procesar datos JSON", e);
                         Toast.makeText(Medicion.this, "Error al procesar datos JSON", Toast.LENGTH_SHORT).show();
                     }
-                }, error -> {
-            Log.e(TAG, "loadInstrumentData: Error de conexión al cargar instrumentos", error);
-            Toast.makeText(Medicion.this, "Error de conexión", Toast.LENGTH_SHORT).show();
-        });
+                },
+                error -> {
+                    Log.e(TAG, "loadInstrumentData: Error de conexión al cargar instrumentos", error);
+                    Toast.makeText(Medicion.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                });
 
-        requestQueue.add(jsonArrayRequest);
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    private String getSelectedInstrumentId() {
+        int position = spinnerInstrumento.getSelectedItemPosition();
+        return instrumentoMap.get(position);
     }
 
     private void guardarMedicion() {
@@ -215,7 +219,6 @@ public class Medicion extends AppCompatActivity {
         selectedLocation = mapHandler.getSelectedLocation();
         if (selectedLocation == null) {
             Toast.makeText(this, "Seleccione una ubicación en el mapa", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "guardarMedicion: Ubicación no seleccionada en el mapa");
             return;
         }
 
@@ -224,17 +227,14 @@ public class Medicion extends AppCompatActivity {
 
         if (instrumentoId == null || proyectoId == null || inspectorId == -1) {
             Toast.makeText(this, "Complete todos los campos y seleccione ubicación", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "guardarMedicion: Campos faltantes - instrumentoId: " + instrumentoId + ", proyectoId: " + proyectoId + ", inspectorId: " + inspectorId);
             return;
         }
 
         String fechaHoraActual = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
 
         if (capturedImage != null) {
-            // Subir la foto primero
             new UploadImageTask(latitud, longitud, temperatura, humedad, valorMedido, observacion, fechaHoraActual, instrumentoId, proyectoId).execute();
         } else {
-            // No hay foto, enviar los datos de la medición sin URL de foto
             sendMeasurementData(latitud, longitud, temperatura, humedad, valorMedido, observacion, fechaHoraActual, instrumentoId, proyectoId, null);
         }
     }
@@ -245,20 +245,12 @@ public class Medicion extends AppCompatActivity {
 
         StringRequest request = new StringRequest(Request.Method.POST, urlGuardarMedicion,
                 response -> {
-                    Log.d(TAG, "guardarMedicion: Respuesta del servidor = " + response);
                     Toast.makeText(Medicion.this, "Medición guardada exitosamente", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(Medicion.this, RegistroMedicion.class);
-                    startActivity(intent);
+                    startActivity(new Intent(Medicion.this, RegistroMedicion.class));
                     finish();
                 },
-                error -> {
-                    String message = "Error al guardar medición";
-                    if (error.networkResponse != null) {
-                        message += ": " + new String(error.networkResponse.data);
-                    }
-                    Log.e(TAG, "guardarMedicion: " + message, error);
-                    Toast.makeText(Medicion.this, message, Toast.LENGTH_LONG).show();
-                }) {
+                error -> Toast.makeText(Medicion.this, "Error al guardar medición", Toast.LENGTH_LONG).show()) {
+
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
@@ -275,7 +267,6 @@ public class Medicion extends AppCompatActivity {
                 if (photoUrl != null) {
                     params.put("photo_url", photoUrl);
                 }
-                Log.d(TAG, "Parámetros enviados (sendMeasurementData): " + params.toString());
                 return params;
             }
         };
@@ -283,15 +274,9 @@ public class Medicion extends AppCompatActivity {
         requestQueue.add(request);
     }
 
-    private String getSelectedInstrumentId() {
-        int position = spinnerInstrumento.getSelectedItemPosition();
-        return instrumentoMap.get(position);
-    }
-
-    // AsyncTask para subir la imagen en segundo plano
     private class UploadImageTask extends AsyncTask<Void, Void, String> {
 
-        private String latitud, longitud, temperatura, humedad, valorMedido, observacion, fechaHoraActual, instrumentoId, proyectoId;
+        private final String latitud, longitud, temperatura, humedad, valorMedido, observacion, fechaHoraActual, instrumentoId, proyectoId;
 
         public UploadImageTask(String latitud, String longitud, String temperatura, String humedad,
                                String valorMedido, String observacion, String fechaHoraActual,
@@ -310,12 +295,10 @@ public class Medicion extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             try {
-                // Convertir Bitmap a ByteArrayOutputStream
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 capturedImage.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
                 byte[] imageData = byteArrayOutputStream.toByteArray();
 
-                // Crear la URL de conexión
                 URL url = new URL(urlUploadPhoto);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setDoOutput(true);
@@ -323,44 +306,27 @@ public class Medicion extends AppCompatActivity {
                 connection.setRequestProperty("Content-Type", "application/octet-stream");
                 connection.setRequestProperty("Connection", "Keep-Alive");
 
-                // Enviar datos de la imagen usando OutputStream
                 try (OutputStream outputStream = connection.getOutputStream()) {
                     outputStream.write(imageData);
-                    outputStream.flush();
                 }
 
                 int responseCode = connection.getResponseCode();
-
-                // Leer la respuesta del servidor
-                InputStream inputStream;
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    inputStream = connection.getInputStream();
-                } else {
-                    inputStream = connection.getErrorStream();
-                }
+                InputStream inputStream = (responseCode == HttpURLConnection.HTTP_OK)
+                        ? connection.getInputStream()
+                        : connection.getErrorStream();
 
                 String serverResponse = convertStreamToString(inputStream);
-
                 connection.disconnect();
 
-                // Registrar la respuesta del servidor
-                Log.d(TAG, "Response Code: " + responseCode);
-                Log.d(TAG, "Server Response: " + serverResponse);
-
-                // Parsear la respuesta JSON
                 JSONObject jsonResponse = new JSONObject(serverResponse);
-                if (jsonResponse.has("success") && jsonResponse.getBoolean("success")) {
-                    photoUrl = jsonResponse.getString("file_url");
-                    return photoUrl;
+                if (jsonResponse.optBoolean("success", false)) {
+                    return jsonResponse.getString("file_url");
                 } else {
-                    String errorMessage = jsonResponse.optString("error", "Error desconocido");
-                    Log.e(TAG, "Error al subir la foto: " + errorMessage);
                     return null;
                 }
 
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
-                Log.e(TAG, "Error al subir la imagen: " + e.getMessage());
                 return null;
             }
         }
@@ -369,19 +335,15 @@ public class Medicion extends AppCompatActivity {
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             StringBuilder sb = new StringBuilder();
             String line;
-
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
-                sb.append('\n');
             }
-            reader.close();
             return sb.toString();
         }
 
         @Override
         protected void onPostExecute(String photoUrl) {
             if (photoUrl != null) {
-
                 sendMeasurementData(latitud, longitud, temperatura, humedad, valorMedido, observacion, fechaHoraActual, instrumentoId, proyectoId, photoUrl);
             } else {
                 Toast.makeText(Medicion.this, "Error al subir la imagen", Toast.LENGTH_SHORT).show();

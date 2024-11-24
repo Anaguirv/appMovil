@@ -116,8 +116,8 @@ public class Dashboard extends AppCompatActivity {
 
         // Configurar escuchador para ir a Activity RegistroMedicion
         containerRegistroMedicion.setOnClickListener(view -> {
-            Intent ventanaRegistroMedicion = new Intent(Dashboard.this, RegistroMedicion.class);
-            startActivity(ventanaRegistroMedicion);
+            Intent ventanaCatalogoFiscalizaciones = new Intent(Dashboard.this, CatalogoFiscalizaciones.class);
+            startActivity(ventanaCatalogoFiscalizaciones);
         });
     }
 

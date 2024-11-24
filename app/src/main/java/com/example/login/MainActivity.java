@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Método para verificar usuario en la base de datos utilizando Volley con POST
     private void verificarUsuario(String usuario, String clave) {
-        String url = "http://98.83.4.206:8080/ApiLogin";
+        String url = "http://98.83.4.206:8080/api_login";
 
         // Crear el cuerpo de la solicitud como JSON
         JSONObject params = new JSONObject();

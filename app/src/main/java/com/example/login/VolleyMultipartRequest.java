@@ -2,14 +2,12 @@ package com.example.login;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
-import com.android.volley.Response;
 import com.android.volley.Request;
-
+import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
 import java.util.Map;
 
 public class VolleyMultipartRequest extends Request<NetworkResponse> {
@@ -18,8 +16,8 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
     private final String lineEnd = "\r\n";
     private final String boundary = "apiclient-" + System.currentTimeMillis();
 
-    private Response.Listener<NetworkResponse> mListener;
-    private Response.ErrorListener mErrorListener;
+    private final Response.Listener<NetworkResponse> mListener;
+    private final Response.ErrorListener mErrorListener;
     private Map<String, String> mHeaders;
 
     public VolleyMultipartRequest(int method, String url,
@@ -48,42 +46,37 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
 
     @Override
     public String getBodyContentType() {
-        return "multipart/form-data;boundary=" + boundary;
+        return "multipart/form-data; boundary=" + boundary;
     }
 
     @Override
     public byte[] getBody() throws AuthFailureError {
-
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
-            // Text parameters
+            // Parsear parámetros de texto
             Map<String, String> params = getParams();
-            if (params != null && params.size() > 0) {
-                textParse(bos, params, getParamsEncoding());
+            if (params != null && !params.isEmpty()) {
+                textParse(bos, params);
             }
 
-            // Data parameters
+            // Parsear parámetros de archivo
             Map<String, DataPart> data = getByteData();
-            if (data != null && data.size() > 0) {
+            if (data != null && !data.isEmpty()) {
                 dataParse(bos, data);
             }
 
-            // End boundary
+            // Agregar el cierre del límite
             bos.write((twoHyphens + boundary + twoHyphens + lineEnd).getBytes());
-            return bos.toByteArray();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
-
+        return bos.toByteArray();
     }
 
     @Override
     protected Response<NetworkResponse> parseNetworkResponse(NetworkResponse response) {
         try {
-            return Response.success(response,
-                    HttpHeaderParser.parseCacheHeaders(response));
+            return Response.success(response, HttpHeaderParser.parseCacheHeaders(response));
         } catch (Exception e) {
             return Response.error(new com.android.volley.ParseError(e));
         }
@@ -104,62 +97,57 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
     }
 
     /**
-     * Override this method to provide parameters.
+     * Sobrescribe este método para proporcionar parámetros.
+     */
+    protected Map<String, String> getParams() throws AuthFailureError {
+        return null;
+    }
+
+    /**
+     * Sobrescribe este método para proporcionar datos binarios.
      */
     protected Map<String, DataPart> getByteData() throws AuthFailureError {
         return null;
     }
 
-    private void textParse(ByteArrayOutputStream bos, Map<String, String> params, String encoding) throws IOException {
-        try {
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(twoHyphens).append(boundary).append(lineEnd);
-                sb.append("Content-Disposition: form-data; name=\"").append(entry.getKey()).append("\"").append(lineEnd);
-                sb.append(lineEnd);
-                sb.append(entry.getValue()).append(lineEnd);
-                bos.write(sb.toString().getBytes(encoding));
-            }
-        } catch (Exception e) {
-            throw new IOException("Error while writing text parameters", e);
+    private void textParse(ByteArrayOutputStream bos, Map<String, String> params) throws IOException {
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+
+            bos.write((twoHyphens + boundary + lineEnd).getBytes());
+            bos.write(("Content-Disposition: form-data; name=\"" + key + "\"" + lineEnd).getBytes());
+            bos.write((lineEnd).getBytes());
+            bos.write((value + lineEnd).getBytes());
         }
     }
 
     private void dataParse(ByteArrayOutputStream bos, Map<String, DataPart> data) throws IOException {
-        try {
-            for (Map.Entry<String, DataPart> entry : data.entrySet()) {
-                DataPart dataFile = entry.getValue();
-                StringBuilder sb = new StringBuilder();
-                sb.append(twoHyphens).append(boundary).append(lineEnd);
-                sb.append("Content-Disposition: form-data; name=\"").append(entry.getKey()).append("\"; filename=\"").append(dataFile.getFileName()).append("\"").append(lineEnd);
-                sb.append("Content-Type: ").append(dataFile.getType()).append(lineEnd);
-                sb.append(lineEnd);
-                bos.write(sb.toString().getBytes());
+        for (Map.Entry<String, DataPart> entry : data.entrySet()) {
+            DataPart dataFile = entry.getValue();
 
-                bos.write(dataFile.getContent());
-                bos.write(lineEnd.getBytes());
-            }
-        } catch (Exception e) {
-            throw new IOException("Error while writing data parameters", e);
+            bos.write((twoHyphens + boundary + lineEnd).getBytes());
+            bos.write(("Content-Disposition: form-data; name=\"" + entry.getKey() + "\"; filename=\"" + dataFile.getFileName() + "\"" + lineEnd).getBytes());
+            bos.write(("Content-Type: " + dataFile.getType() + lineEnd).getBytes());
+            bos.write((lineEnd).getBytes());
+
+            bos.write(dataFile.getContent());
+            bos.write((lineEnd).getBytes());
         }
     }
 
     public static class DataPart {
-        private String fileName;
-        private byte[] content;
-        private String type;
+        private final String fileName;
+        private final byte[] content;
+        private final String type;
 
-        public DataPart() {
+        public DataPart(String fileName, byte[] content) {
+            this(fileName, content, "application/octet-stream");
         }
 
-        public DataPart(String name, byte[] data) {
-            fileName = name;
-            content = data;
-        }
-
-        public DataPart(String name, byte[] data, String type) {
-            fileName = name;
-            content = data;
+        public DataPart(String fileName, byte[] content, String type) {
+            this.fileName = fileName;
+            this.content = content;
             this.type = type;
         }
 
