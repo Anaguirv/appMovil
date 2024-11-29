@@ -38,60 +38,102 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-      <!-- Nombre del proyecto -->
-      <TextView
-          android:id="@+id/textViewNombreProyecto"
+      <TableLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="Nombre del Proyecto: Faro"
-          android:textSize="18sp"
-          android:textStyle="bold" />
+          android:stretchColumns="1"
+          android:padding="16dp">
 
-      <!-- Tipo de alumbrado -->
-      <TextView
-          android:id="@+id/textViewTipoAlumbrado"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="Tipo de Alumbrado: Público"
-          android:textSize="16sp"
-          android:layout_marginTop="8dp" />
+        <!-- Fila: Nombre del proyecto -->
+        <TableRow>
+          <TextView
+              android:text="Nombre del Proyecto:"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textStyle="bold"
+              android:paddingEnd="8dp" />
+          <TextView
+              android:id="@+id/textViewNombreProyecto"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Faro" />
+        </TableRow>
 
-      <!-- Representante legal -->
-      <TextView
-          android:id="@+id/textViewRepresentanteLegal"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="Representante Legal: Christian Galindez"
-          android:textSize="16sp"
-          android:layout_marginTop="8dp" />
+        <!-- Fila: Tipo de alumbrado -->
+        <TableRow>
+          <TextView
+              android:text="Tipo de Alumbrado:"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textStyle="bold"
+              android:paddingEnd="8dp" />
+          <TextView
+              android:id="@+id/textViewTipoAlumbrado"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Público" />
+        </TableRow>
 
-      <!-- Titular -->
-      <TextView
-          android:id="@+id/textViewTitular"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="Titular: Titu TT"
-          android:textSize="16sp"
-          android:layout_marginTop="8dp" />
+        <!-- Fila: Representante Legal -->
+        <TableRow>
+          <TextView
+              android:text="Representante Legal:"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textStyle="bold"
+              android:paddingEnd="8dp" />
+          <TextView
+              android:id="@+id/textViewRepresentanteLegal"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Christian Galindez" />
+        </TableRow>
 
-      <!-- Descripción del proyecto -->
-      <TextView
-          android:id="@+id/textViewDescripcion"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="Descripción: Este proyecto es un alumbrado público cerca del faro."
-          android:textSize="16sp"
-          android:layout_marginTop="8dp" />
+        <!-- Fila: Titular -->
+        <TableRow>
+          <TextView
+              android:text="Titular:"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textStyle="bold"
+              android:paddingEnd="8dp" />
+          <TextView
+              android:id="@+id/textViewTitular"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Titu TT" />
+        </TableRow>
 
-      <!-- Detalles de las luminarias -->
-      <TextView
-          android:id="@+id/textViewDetallesLuminarias"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="Luminarias: Tipo de lámpara: LED, Marca: Philips, Modelo: X100"
-          android:textSize="16sp"
-          android:layout_marginTop="8dp" />
+        <!-- Fila: Descripción -->
+        <TableRow>
+          <TextView
+              android:text="Descripción:"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textStyle="bold"
+              android:paddingEnd="8dp" />
+          <TextView
+              android:id="@+id/textViewDescripcion"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Este proyecto es un alumbrado público cerca del faro." />
+        </TableRow>
 
+        <!-- Fila: Detalles de luminarias -->
+        <TableRow>
+          <TextView
+              android:text="Detalles Luminarias:"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textStyle="bold"
+              android:paddingEnd="8dp" />
+          <TextView
+              android:id="@+id/textViewDetallesLuminarias"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="LED, Marca: Philips, Modelo: X100" />
+        </TableRow>
+      </TableLayout>
       <!-- Contenedor para el mapa -->
       <fragment
           android:id="@+id/mapContainer"

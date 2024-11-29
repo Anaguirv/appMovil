@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -28,7 +27,6 @@ import androidx.core.content.FileProvider;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -37,15 +35,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,9 +57,8 @@ public class Medicion extends AppCompatActivity {
     private Button btnTomarFoto;
 
     private RequestQueue requestQueue;
-    private String urlInstrumentos = "http://98.83.4.206:8080/ApiInstrumentoMedicion";
-    private String urlGuardarMedicion = "http://52.71.115.13/GuardarMedicion.php";
-    private String urlUploadPhoto = "http://52.71.115.13/upload.php";
+    private String urlInstrumentos = "http://98.83.4.206/Api_instrumentos_medicion";
+    private String urlGuardarMedicion = "http://98.83.4.206/Guardar_medicion";
 
     private HashMap<Integer, String> instrumentoMap = new HashMap<>();
     private String proyectoId;
@@ -77,8 +68,6 @@ public class Medicion extends AppCompatActivity {
     private MapHandler mapHandler;
     private Bitmap capturedImage;
     private Uri imageUri;
-
-    private String photoUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,7 +161,7 @@ public class Medicion extends AppCompatActivity {
                     instrumentoMap.put(0, null);
 
                     try {
-                        JSONArray instrumentosArray = response.getJSONArray("instrumentosMedicion");
+                        JSONArray instrumentosArray = response.getJSONArray("instrumentos");
                         for (int i = 0; i < instrumentosArray.length(); i++) {
                             JSONObject instrumento = instrumentosArray.getJSONObject(i);
                             int id = instrumento.getInt("id");
@@ -198,7 +187,7 @@ public class Medicion extends AppCompatActivity {
                 },
                 error -> {
                     Log.e(TAG, "loadInstrumentData: Error de conexión al cargar instrumentos", error);
-                    Toast.makeText(Medicion.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error de conexión", Toast.LENGTH_SHORT).show();
                 });
 
         requestQueue.add(jsonObjectRequest);
@@ -210,6 +199,8 @@ public class Medicion extends AppCompatActivity {
     }
 
     private void guardarMedicion() {
+        Log.d(TAG, "Iniciando la función guardarMedicion");
+
         String instrumentoId = getSelectedInstrumentId();
         String temperatura = editTextTemperatura.getText().toString();
         String humedad = editTextHumedad.getText().toString();
@@ -218,6 +209,7 @@ public class Medicion extends AppCompatActivity {
 
         selectedLocation = mapHandler.getSelectedLocation();
         if (selectedLocation == null) {
+            Log.e(TAG, "Ubicación no seleccionada en el mapa");
             Toast.makeText(this, "Seleccione una ubicación en el mapa", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -226,30 +218,46 @@ public class Medicion extends AppCompatActivity {
         String longitud = String.valueOf(selectedLocation.longitude);
 
         if (instrumentoId == null || proyectoId == null || inspectorId == -1) {
-            Toast.makeText(this, "Complete todos los campos y seleccione ubicación", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Faltan campos requeridos");
+            Toast.makeText(this, "Complete todos los campos y tome una foto", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String fechaHoraActual = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-
-        if (capturedImage != null) {
-            new UploadImageTask(latitud, longitud, temperatura, humedad, valorMedido, observacion, fechaHoraActual, instrumentoId, proyectoId).execute();
-        } else {
-            sendMeasurementData(latitud, longitud, temperatura, humedad, valorMedido, observacion, fechaHoraActual, instrumentoId, proyectoId, null);
+        if (capturedImage == null) {
+            Log.e(TAG, "No se tomó ninguna foto");
+            Toast.makeText(this, "Debe tomar una foto antes de guardar", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        Log.d(TAG, "Preparando datos para enviar al servidor");
+        uploadMedicionWithPhoto(latitud, longitud, temperatura, humedad, valorMedido, observacion, instrumentoId, proyectoId);
     }
 
-    private void sendMeasurementData(String latitud, String longitud, String temperatura, String humedad,
-                                     String valorMedido, String observacion, String fechaHoraActual,
-                                     String instrumentoId, String proyectoId, @Nullable String photoUrl) {
+    private void uploadMedicionWithPhoto(String latitud, String longitud, String temperatura, String humedad,
+                                         String valorMedido, String observacion, String instrumentoId, String proyectoId) {
 
-        StringRequest request = new StringRequest(Request.Method.POST, urlGuardarMedicion,
+        Log.d(TAG, "Iniciando solicitud al servidor");
+        VolleyMultipartRequest request = new VolleyMultipartRequest(Request.Method.POST, urlGuardarMedicion,
                 response -> {
-                    Toast.makeText(Medicion.this, "Medición guardada exitosamente", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(Medicion.this, RegistroMedicion.class));
-                    finish();
+                    try {
+                        JSONObject jsonResponse = new JSONObject(new String(response.data));
+                        Log.d(TAG, "Respuesta del servidor: " + jsonResponse.toString());
+                        if (jsonResponse.optString("mensaje").equals("Medición guardada exitosamente")) {
+                            Toast.makeText(Medicion.this, "Medición guardada exitosamente", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(Medicion.this, RegistroMedicion.class));
+                            finish();
+                        } else {
+                            Log.e(TAG, "Error en la respuesta del servidor: " + jsonResponse.optString("error"));
+                            Toast.makeText(Medicion.this, "Error al guardar la medición: " + jsonResponse.optString("error"), Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error al procesar la respuesta del servidor", e);
+                    }
                 },
-                error -> Toast.makeText(Medicion.this, "Error al guardar medición", Toast.LENGTH_LONG).show()) {
+                error -> {
+                    Log.e(TAG, "Error en la solicitud al servidor", error);
+                    Toast.makeText(Medicion.this, "Error al guardar la medición", Toast.LENGTH_LONG).show();
+                }) {
 
             @Override
             protected Map<String, String> getParams() {
@@ -260,94 +268,24 @@ public class Medicion extends AppCompatActivity {
                 params.put("humedad", humedad);
                 params.put("valor_medido", valorMedido);
                 params.put("observacion", observacion);
-                params.put("creado", fechaHoraActual);
-                params.put("inspector_id", String.valueOf(inspectorId));
                 params.put("instrumento_medicion_id", instrumentoId);
-                params.put("proyecto_id", proyectoId);
-                if (photoUrl != null) {
-                    params.put("photo_url", photoUrl);
-                }
+                params.put("fiscalizacion_id", proyectoId);
+                params.put("tipo", "m"); // Tipo predeterminado
+                return params;
+            }
+
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                capturedImage.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                params.put("foto", new DataPart("medicion_" + proyectoId + ".jpg", byteArrayOutputStream.toByteArray(), "image/jpeg"));
+                Log.d(TAG, "Foto añadida a la solicitud");
                 return params;
             }
         };
 
+        Log.d(TAG, "Enviando solicitud al servidor");
         requestQueue.add(request);
-    }
-
-    private class UploadImageTask extends AsyncTask<Void, Void, String> {
-
-        private final String latitud, longitud, temperatura, humedad, valorMedido, observacion, fechaHoraActual, instrumentoId, proyectoId;
-
-        public UploadImageTask(String latitud, String longitud, String temperatura, String humedad,
-                               String valorMedido, String observacion, String fechaHoraActual,
-                               String instrumentoId, String proyectoId) {
-            this.latitud = latitud;
-            this.longitud = longitud;
-            this.temperatura = temperatura;
-            this.humedad = humedad;
-            this.valorMedido = valorMedido;
-            this.observacion = observacion;
-            this.fechaHoraActual = fechaHoraActual;
-            this.instrumentoId = instrumentoId;
-            this.proyectoId = proyectoId;
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            try {
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                capturedImage.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                byte[] imageData = byteArrayOutputStream.toByteArray();
-
-                URL url = new URL(urlUploadPhoto);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/octet-stream");
-                connection.setRequestProperty("Connection", "Keep-Alive");
-
-                try (OutputStream outputStream = connection.getOutputStream()) {
-                    outputStream.write(imageData);
-                }
-
-                int responseCode = connection.getResponseCode();
-                InputStream inputStream = (responseCode == HttpURLConnection.HTTP_OK)
-                        ? connection.getInputStream()
-                        : connection.getErrorStream();
-
-                String serverResponse = convertStreamToString(inputStream);
-                connection.disconnect();
-
-                JSONObject jsonResponse = new JSONObject(serverResponse);
-                if (jsonResponse.optBoolean("success", false)) {
-                    return jsonResponse.getString("file_url");
-                } else {
-                    return null;
-                }
-
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        private String convertStreamToString(InputStream is) throws IOException {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-            return sb.toString();
-        }
-
-        @Override
-        protected void onPostExecute(String photoUrl) {
-            if (photoUrl != null) {
-                sendMeasurementData(latitud, longitud, temperatura, humedad, valorMedido, observacion, fechaHoraActual, instrumentoId, proyectoId, photoUrl);
-            } else {
-                Toast.makeText(Medicion.this, "Error al subir la imagen", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 }

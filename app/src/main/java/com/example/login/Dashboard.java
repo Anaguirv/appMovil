@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -22,22 +22,19 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class Dashboard extends AppCompatActivity {
-    // Atributos
+
+    private static final String TAG = "DashboardActivity";
+
     TextView txtFecha, txtUsuario;
     private LinearLayout containerUsuarios, containerSensores, containerRegistroMedicion;
     private final Handler mHandler = new Handler();
-    // navBar start
     private LinearLayout containerNavBarInicio, containerNavBarUser, containerNavBarSensor;
     private ImageView navBarGit, imglogo;
-    // navBar end
-
-
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dashboard);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.dashboard), (v, insets) -> {
@@ -46,27 +43,29 @@ public class Dashboard extends AppCompatActivity {
             return insets;
         });
 
-
-        // Obtener el correo desde el Intent
+        // Obtener el ID y username desde el Intent
         Intent intent = getIntent();
-        String correo = intent.getStringExtra("correo");
+        int id = intent.getIntExtra("id", -1); // Valor predeterminado si no se recibe
+        String username = intent.getStringExtra("username");
 
-        // Crear relación entre parte gráfica y lógica
+        // Registrar en Logcat para verificar los datos recibidos
+        Log.d(TAG, "ID recibido: " + id);
+        Log.d(TAG, "Username recibido: " + username);
+
+        // Asignar los componentes gráficos
         txtFecha = findViewById(R.id.txt_fecha);
         txtUsuario = findViewById(R.id.txt_usuario);
         imglogo = findViewById(R.id.imglogo);
 
-        //navBar
         navBarGit = findViewById(R.id.navBarGit);
         containerNavBarSensor = findViewById(R.id.containerNavBarSensor);
         containerNavBarInicio = findViewById(R.id.containerNavBarInicio);
         containerNavBarUser = findViewById(R.id.containerNavBarUser);
-        //navBar end
 
         Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
         imglogo.startAnimation(rotateAnimation);
 
-        //navBar Funcionalidad
+        // Funcionalidad del NavBar
         containerNavBarInicio.setOnClickListener(view -> {
             Intent intent2 = new Intent(Dashboard.this, Dashboard.class);
             intent2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -91,30 +90,31 @@ public class Dashboard extends AppCompatActivity {
             intent2.setData(Uri.parse(url));
             startActivity(intent2);
         });
-        // navBar END
 
-        // Configurar el texto para mostrar la fecha y el correo por separado
-        txtUsuario.setText(correo);
+        // Configurar el texto para mostrar el username recibido
+        if (username != null) {
+            txtUsuario.setText(username);
+        } else {
+            txtUsuario.setText("Usuario desconocido");
+        }
+
         mHandler.post(actualizarFechaRunnable);
 
         containerSensores = findViewById(R.id.containerSensores);
         containerUsuarios = findViewById(R.id.containerUsuarios);
         containerRegistroMedicion = findViewById(R.id.containerRegistroMedicion);
 
-
-        // Configurar escuchador para ir a Activity Sensores
+        // Configurar escuchadores para los contenedores
         containerSensores.setOnClickListener(view -> {
             Intent ventanaSensores = new Intent(Dashboard.this, MonitoreoSensores.class);
             startActivity(ventanaSensores);
         });
 
-        // Configurar escuchador para ir a Activity Usuarios
         containerUsuarios.setOnClickListener(view -> {
             Intent ventanaUsuarios = new Intent(Dashboard.this, DashboardUsuario.class);
             startActivity(ventanaUsuarios);
         });
 
-        // Configurar escuchador para ir a Activity RegistroMedicion
         containerRegistroMedicion.setOnClickListener(view -> {
             Intent ventanaCatalogoFiscalizaciones = new Intent(Dashboard.this, CatalogoFiscalizaciones.class);
             startActivity(ventanaCatalogoFiscalizaciones);
@@ -126,7 +126,7 @@ public class Dashboard extends AppCompatActivity {
         @Override
         public void run() {
             txtFecha.setText(obtenerFechaActual());
-            mHandler.postDelayed(this, 1000); // Actualiza cada segundo
+            mHandler.postDelayed(this, 1000);
         }
     };
 
@@ -140,6 +140,6 @@ public class Dashboard extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mHandler.removeCallbacks(actualizarFechaRunnable); // Detener actualizaciones al salir
+        mHandler.removeCallbacks(actualizarFechaRunnable);
     }
 }

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -36,41 +35,46 @@ import java.util.Map;
 
 public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCallback {
 
-    private TextView textViewNombreProyecto, textViewTipoAlumbrado, textViewRepresentanteLegal, textViewDescripcion;
+    // Componentes de la interfaz
+    private TextView textViewNombreProyecto, textViewTipoAlumbrado, textViewRepresentanteLegal, textViewTitular, textViewDescripcion, textViewDetallesLuminarias;
     private Button buttonTomarFoto, buttonEliminarFoto, buttonAgregarMedicion;
     private ImageView imageViewFoto;
 
-    private String fiscalizacionId; // ID de la fiscalización
-    private String proyectoId; // ID del proyecto asociado
-    private String fotoRuta; // Ruta de la foto almacenada
-    private double latitud, longitud; // Coordenadas del proyecto
-    private GoogleMap googleMap; // Referencia al mapa
-    private Bitmap fotoCapturada; // Foto tomada
+    // Variables de lógica de negocio
+    private String fiscalizacionId;
+    private String proyectoId;
+    private String fotoRuta;
+    private double latitud, longitud;
+    private GoogleMap googleMap;
+    private Bitmap fotoCapturada;
 
-    private static final int REQUEST_IMAGE_CAPTURE = 1; // Código para la cámara
-    private static final String URL_BASE = "http://98.83.4.206:8080/";
-    private static final String URL_PROYECTO = URL_BASE + "api_modelo_proyecto";
-    private static final String URL_GUARDAR_FOTO = URL_BASE + "guardar_foto_proyecto";
+    // Constantes
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final String URL_BASE = "http://98.83.4.206/";
+    private static final String URL_PROYECTO = URL_BASE + "Api_Proyectos";
+    private static final String URL_GUARDAR_FOTO = URL_BASE + "Guardar_foto_proyecto";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro_medicion);
 
-        // Vincular elementos del XML
+        // Vinculación de los componentes del XML con los atributos del código
         textViewNombreProyecto = findViewById(R.id.textViewNombreProyecto);
         textViewTipoAlumbrado = findViewById(R.id.textViewTipoAlumbrado);
         textViewRepresentanteLegal = findViewById(R.id.textViewRepresentanteLegal);
+        textViewTitular = findViewById(R.id.textViewTitular);
+        textViewDetallesLuminarias = findViewById(R.id.textViewDetallesLuminarias);
         textViewDescripcion = findViewById(R.id.textViewDescripcion);
         buttonTomarFoto = findViewById(R.id.buttonTomarFoto);
         buttonEliminarFoto = findViewById(R.id.buttonEliminarFoto);
         buttonAgregarMedicion = findViewById(R.id.buttonAgregarMedicion);
         imageViewFoto = findViewById(R.id.imageViewFoto);
 
-        // Botón "Eliminar Foto" oculto al inicio
+        // Ocultar el botón "Eliminar Foto" inicialmente
         buttonEliminarFoto.setVisibility(View.GONE);
 
-        // Obtener el ID de fiscalización y proyecto desde el Intent
+        // Obtener IDs necesarios desde el Intent
         fiscalizacionId = getIntent().getStringExtra("fiscalizacion_id");
         proyectoId = getIntent().getStringExtra("proyecto_id");
 
@@ -83,10 +87,10 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapContainer);
         mapFragment.getMapAsync(this);
 
-        // Configurar acciones para los botones
+        // Configurar acciones de los botones
         configurarBotones();
 
-        // Cargar detalles del proyecto
+        // Cargar detalles del proyecto desde la API
         cargarDetallesProyecto();
     }
 
@@ -107,15 +111,16 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
     @Override
     public void onMapReady(GoogleMap map) {
         googleMap = map;
-        // La carga de la ubicación se hace después de obtener los detalles del proyecto
     }
 
     private void abrirMedicion() {
         Intent intent = new Intent(RegistroMedicion.this, Medicion.class);
         intent.putExtra("fiscalizacion_id", fiscalizacionId);
         intent.putExtra("proyecto_id", proyectoId);
+        intent.putExtra("proyecto_nombre", textViewNombreProyecto.getText().toString()); // Enviar el nombre del proyecto
         startActivity(intent);
     }
+
 
     private void tomarFoto() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -130,14 +135,11 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            if (data != null && data.getExtras() != null) {
-                fotoCapturada = (Bitmap) data.getExtras().get("data");
-                imageViewFoto.setImageBitmap(fotoCapturada);
-                buttonEliminarFoto.setVisibility(View.VISIBLE); // Mostrar botón "Eliminar Foto"
-                buttonTomarFoto.setText("Guardar Foto"); // Cambiar texto del botón
-                Log.d("RegistroMedicion", "Foto capturada y mostrada correctamente.");
-            }
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null && data.getExtras() != null) {
+            fotoCapturada = (Bitmap) data.getExtras().get("data");
+            imageViewFoto.setImageBitmap(fotoCapturada);
+            buttonEliminarFoto.setVisibility(View.VISIBLE);
+            buttonTomarFoto.setText("Guardar Foto");
         }
     }
 
@@ -147,40 +149,23 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
             return;
         }
 
-        // Verificar el ID del proyecto
-        if (proyectoId == null || proyectoId.isEmpty()) {
-            Log.e("RegistroMedicion", "Error: proyectoId está vacío o nulo.");
-            Toast.makeText(this, "Error: No se ha recibido el ID del proyecto.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Convertir la foto capturada en bytes
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         fotoCapturada.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] fotoBytes = baos.toByteArray();
 
-        // Crear la solicitud multipart para enviar la foto como archivo
         VolleyMultipartRequest request = new VolleyMultipartRequest(Request.Method.POST, URL_GUARDAR_FOTO,
                 response -> {
                     try {
-                        String responseString = new String(response.data);
-                        Log.d("RegistroMedicion", "Respuesta del servidor: " + responseString);
-                        JSONObject jsonResponse = new JSONObject(responseString);
+                        JSONObject jsonResponse = new JSONObject(new String(response.data));
                         fotoRuta = jsonResponse.getString("foto_url");
-                        cargarFotoDesdeRuta(fotoRuta); // Cargar la foto guardada
+                        cargarFotoDesdeRuta(fotoRuta);
                         Toast.makeText(this, "Foto guardada correctamente.", Toast.LENGTH_SHORT).show();
                         buttonTomarFoto.setText("Tomar Foto");
                     } catch (JSONException e) {
-                        Log.e("RegistroMedicion", "Error procesando respuesta: " + e.getMessage());
-                        Toast.makeText(this, "Error al procesar respuesta del servidor.", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
                     }
                 },
-                error -> {
-                    Log.e("RegistroMedicion", "Error al guardar la foto: " + (error.networkResponse != null
-                            ? new String(error.networkResponse.data)
-                            : "Error desconocido"));
-                    Toast.makeText(this, "Error al guardar la foto.", Toast.LENGTH_SHORT).show();
-                }) {
+                error -> Toast.makeText(this, "Error al guardar la foto.", Toast.LENGTH_SHORT).show()) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
@@ -196,9 +181,7 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
             }
         };
 
-        // Agregar la solicitud a la cola de Volley
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(request);
+        Volley.newRequestQueue(this).add(request);
     }
 
     private void eliminarFoto() {
@@ -209,67 +192,86 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
     }
 
     private void cargarDetallesProyecto() {
-        String urlProyectoConId = URL_PROYECTO; // No es necesario agregar el ID en la URL
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, urlProyectoConId, null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, URL_PROYECTO, null,
                 response -> {
                     try {
-                        // Obtener el arreglo de proyectos
                         JSONArray proyectosArray = response.getJSONArray("proyectos");
-
-                        // Recorrer los proyectos para encontrar el correspondiente al proyectoId
                         for (int i = 0; i < proyectosArray.length(); i++) {
                             JSONObject proyecto = proyectosArray.getJSONObject(i);
                             if (proyecto.getString("id").equals(proyectoId)) {
-                                // Cargar detalles del proyecto
-                                textViewNombreProyecto.setText("Nombre: " + proyecto.getString("nombre"));
-                                textViewTipoAlumbrado.setText("Tipo Alumbrado: " + proyecto.getString("tipo_alumbrado"));
-                                textViewRepresentanteLegal.setText("Representante: " + proyecto.getJSONObject("representante_legal").getString("nombre"));
-                                textViewDescripcion.setText("Descripción: " + proyecto.getString("descripcion"));
+                                textViewNombreProyecto.setText("" + proyecto.getString("nombre"));
 
-                                // Cargar la foto si existe
+                                String tipoAlumbrado = convertirTipoAlumbrado(proyecto.getString("tipo_alumbrado"));
+                                textViewTipoAlumbrado.setText("" + tipoAlumbrado);
+
+                                JSONObject titular = proyecto.getJSONObject("titular");
+                                textViewTitular.setText("" + titular.getString("nombre") + " " +
+                                        titular.getString("a_paterno") + " " + titular.getString("a_materno"));
+
+                                JSONObject representante = proyecto.getJSONObject("representante_legal");
+                                textViewRepresentanteLegal.setText("" + representante.getString("nombre") + " " +
+                                        representante.getString("a_paterno") + " " + representante.getString("a_materno"));
+
+                                JSONObject detalleLuminarias = proyecto.getJSONObject("detalle_luminarias");
+                                textViewDetallesLuminarias.setText("" +
+                                        "CANTIDAD: " + detalleLuminarias.getInt("cantidad") + "\n" +
+                                        "TIPO: " + detalleLuminarias.getString("tipo_lampara") + "\n" +
+                                        "MARCA: " + detalleLuminarias.getString("marca") + "\n" +
+                                        "MODELO: " + detalleLuminarias.getString("modelo"));
+
+                                textViewDescripcion.setText("" + proyecto.getString("descripcion"));
+
                                 fotoRuta = proyecto.optString("foto", null);
                                 cargarFotoDesdeRuta(fotoRuta);
 
-                                // Coordenadas del proyecto
                                 latitud = proyecto.getDouble("latitud");
                                 longitud = proyecto.getDouble("longitud");
                                 mostrarUbicacionEnMapa();
-
-                                break; // Salir del bucle, ya que encontramos el proyecto
+                                break;
                             }
                         }
                     } catch (JSONException e) {
-                        Log.e("RegistroMedicion", "Error al procesar respuesta del proyecto: " + e.getMessage());
+                        e.printStackTrace();
                     }
                 },
-                error -> Log.e("RegistroMedicion", "Error al cargar detalles del proyecto: " + error.getMessage()));
+                error -> Toast.makeText(this, "Error al cargar detalles del proyecto.", Toast.LENGTH_SHORT).show());
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(request);
+        Volley.newRequestQueue(this).add(request);
     }
-
 
     private void cargarFotoDesdeRuta(String rutaRelativa) {
         if (rutaRelativa != null && !rutaRelativa.isEmpty()) {
-            String urlCompleta = URL_BASE + rutaRelativa.replaceFirst("^/", ""); // Asegurar que no haya doble "/"
-            Log.d("RegistroMedicion", "Cargando foto desde URL: " + urlCompleta);
-            Glide.with(this)
-                    .load(urlCompleta)
-                    .error(R.drawable.ic_error) // Imagen de error en caso de fallo
-                    .into(imageViewFoto);
-            buttonEliminarFoto.setVisibility(View.VISIBLE); // Mostrar botón "Eliminar Foto"
+            if (!rutaRelativa.startsWith("media/")) {
+                rutaRelativa = "media/" + rutaRelativa;
+            }
+            String urlCompleta = URL_BASE + rutaRelativa.replaceFirst("^/", "");
+            Glide.with(this).load(urlCompleta).error(R.drawable.ic_error).into(imageViewFoto);
+            buttonEliminarFoto.setVisibility(View.VISIBLE);
         } else {
-            Log.d("RegistroMedicion", "No se proporcionó una ruta válida para la foto.");
-            eliminarFoto(); // Limpiar la vista si no hay foto
+            eliminarFoto();
         }
     }
-
 
     private void mostrarUbicacionEnMapa() {
         if (googleMap != null) {
             LatLng ubicacionProyecto = new LatLng(latitud, longitud);
             googleMap.addMarker(new MarkerOptions().position(ubicacionProyecto).title("Ubicación del Proyecto"));
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ubicacionProyecto, 15));
+        }
+    }
+
+    private String convertirTipoAlumbrado(String tipo) {
+        switch (tipo) {
+            case "v":
+                return "Vehicular";
+            case "p":
+                return "Peatonal";
+            case "i":
+                return "Industrial";
+            case "o":
+                return "Ornamental";
+            default:
+                return "Desconocido";
         }
     }
 }
