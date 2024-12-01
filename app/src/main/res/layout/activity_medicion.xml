@@ -49,6 +49,14 @@
                 android:text="Valor del Proyecto"
                 android:hint="Proyecto desde RegistroMedicion" />
 
+            <!-- Nuevo Spinner para Proyecto -->
+            <Spinner
+                android:id="@+id/spinnerTipo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:spinnerMode="dropdown" />
+
             <!-- Campo Instrumento de Medición -->
             <TextView
                 android:id="@+id/textViewInstrumento"
@@ -134,9 +142,7 @@
                 <FrameLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                </FrameLayout>
+                    android:layout_weight="1" />
 
                 <ImageView
                     android:id="@+id/imageView1"
@@ -148,7 +154,7 @@
                 <FrameLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
             </LinearLayout>
 
             <!-- Sección del mapa -->

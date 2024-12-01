@@ -23,6 +23,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import com.android.volley.Request;
+import com.android.volley.toolbox.JsonObjectRequest;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -61,7 +63,7 @@ public class Medicion extends AppCompatActivity {
     private String urlGuardarMedicion = "http://98.83.4.206/Guardar_medicion";
 
     private HashMap<Integer, String> instrumentoMap = new HashMap<>();
-    private String proyectoId;
+    private String fiscalizacion_id;
     private LatLng selectedLocation;
     private int inspectorId;
 
@@ -81,7 +83,9 @@ public class Medicion extends AppCompatActivity {
         Log.d(TAG, "onCreate: Inspector ID = " + inspectorId);
 
         Intent intent = getIntent();
-        proyectoId = intent.getStringExtra("proyecto_id");
+        fiscalizacion_id = intent.getStringExtra("fiscalizacion_id");
+        Log.d(TAG, "onCreate: Proyecto ID = " + fiscalizacion_id);
+
         String proyectoNombre = intent.getStringExtra("proyecto_nombre");
 
         textProyectoValor = findViewById(R.id.textProyectoValor);
@@ -217,7 +221,7 @@ public class Medicion extends AppCompatActivity {
         String latitud = String.valueOf(selectedLocation.latitude);
         String longitud = String.valueOf(selectedLocation.longitude);
 
-        if (instrumentoId == null || proyectoId == null || inspectorId == -1) {
+        if (instrumentoId == null || fiscalizacion_id == null || inspectorId == -1) {
             Log.e(TAG, "Faltan campos requeridos");
             Toast.makeText(this, "Complete todos los campos y tome una foto", Toast.LENGTH_SHORT).show();
             return;
@@ -230,7 +234,7 @@ public class Medicion extends AppCompatActivity {
         }
 
         Log.d(TAG, "Preparando datos para enviar al servidor");
-        uploadMedicionWithPhoto(latitud, longitud, temperatura, humedad, valorMedido, observacion, instrumentoId, proyectoId);
+        uploadMedicionWithPhoto(latitud, longitud, temperatura, humedad, valorMedido, observacion, instrumentoId, fiscalizacion_id);
     }
 
     private void uploadMedicionWithPhoto(String latitud, String longitud, String temperatura, String humedad,

@@ -1,9 +1,12 @@
 package com.example.login;
 
+import android.util.Log;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 
 import java.io.ByteArrayOutputStream;
@@ -11,6 +14,8 @@ import java.io.IOException;
 import java.util.Map;
 
 public class VolleyMultipartRequest extends Request<NetworkResponse> {
+
+    private static final String TAG = "VolleyMultipartRequest";
 
     private final String twoHyphens = "--";
     private final String lineEnd = "\r\n";
@@ -68,7 +73,7 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
             // Agregar el cierre del límite
             bos.write((twoHyphens + boundary + twoHyphens + lineEnd).getBytes());
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error al construir el cuerpo de la solicitud", e);
         }
         return bos.toByteArray();
     }
@@ -76,8 +81,10 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
     @Override
     protected Response<NetworkResponse> parseNetworkResponse(NetworkResponse response) {
         try {
+            Log.d(TAG, "Código de respuesta del servidor: " + response.statusCode);
             return Response.success(response, HttpHeaderParser.parseCacheHeaders(response));
         } catch (Exception e) {
+            Log.e(TAG, "Error al analizar la respuesta del servidor.", e);
             return Response.error(new com.android.volley.ParseError(e));
         }
     }
@@ -85,12 +92,28 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
     @Override
     protected void deliverResponse(NetworkResponse response) {
         if (mListener != null) {
+            Log.d(TAG, "deliverResponse: Respuesta exitosa recibida.");
             mListener.onResponse(response);
         }
     }
 
     @Override
-    public void deliverError(com.android.volley.VolleyError error) {
+    public void deliverError(VolleyError error) {
+        if (error.networkResponse != null) {
+            Log.e(TAG, "Código de estado del error: " + error.networkResponse.statusCode);
+            Log.e(TAG, "Detalle del error: " + new String(error.networkResponse.data));
+
+            try {
+                String responseBody = new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers, "utf-8"));
+                Log.e(TAG, "Respuesta del error: " + responseBody);
+                Log.e(TAG, "Detalle del error: " + new String(error.networkResponse.data));
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error al leer el cuerpo de la respuesta", e);
+            }
+        } else {
+            Log.e(TAG, "Error sin respuesta del servidor.", error);
+        }
         if (mErrorListener != null) {
             mErrorListener.onErrorResponse(error);
         }
