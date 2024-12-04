@@ -13,11 +13,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -117,10 +115,9 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
         Intent intent = new Intent(RegistroMedicion.this, Medicion.class);
         intent.putExtra("fiscalizacion_id", fiscalizacionId);
         intent.putExtra("proyecto_id", proyectoId);
-        intent.putExtra("proyecto_nombre", textViewNombreProyecto.getText().toString()); // Enviar el nombre del proyecto
+        intent.putExtra("proyecto_nombre", textViewNombreProyecto.getText().toString());
         startActivity(intent);
     }
-
 
     private void tomarFoto() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -181,7 +178,9 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
             }
         };
 
-        Volley.newRequestQueue(this).add(request);
+// Usar el Singleton para la cola
+        VolleySingleton.getInstance(this).addToRequestQueue(request);
+
     }
 
     private void eliminarFoto() {
@@ -199,27 +198,26 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
                         for (int i = 0; i < proyectosArray.length(); i++) {
                             JSONObject proyecto = proyectosArray.getJSONObject(i);
                             if (proyecto.getString("id").equals(proyectoId)) {
-                                textViewNombreProyecto.setText("" + proyecto.getString("nombre"));
+                                textViewNombreProyecto.setText(proyecto.getString("nombre"));
 
                                 String tipoAlumbrado = convertirTipoAlumbrado(proyecto.getString("tipo_alumbrado"));
-                                textViewTipoAlumbrado.setText("" + tipoAlumbrado);
+                                textViewTipoAlumbrado.setText(tipoAlumbrado);
 
                                 JSONObject titular = proyecto.getJSONObject("titular");
-                                textViewTitular.setText("" + titular.getString("nombre") + " " +
+                                textViewTitular.setText(titular.getString("nombre") + " " +
                                         titular.getString("a_paterno") + " " + titular.getString("a_materno"));
 
                                 JSONObject representante = proyecto.getJSONObject("representante_legal");
-                                textViewRepresentanteLegal.setText("" + representante.getString("nombre") + " " +
+                                textViewRepresentanteLegal.setText(representante.getString("nombre") + " " +
                                         representante.getString("a_paterno") + " " + representante.getString("a_materno"));
 
                                 JSONObject detalleLuminarias = proyecto.getJSONObject("detalle_luminarias");
-                                textViewDetallesLuminarias.setText("" +
-                                        "CANTIDAD: " + detalleLuminarias.getInt("cantidad") + "\n" +
-                                        "TIPO: " + detalleLuminarias.getString("tipo_lampara") + "\n" +
-                                        "MARCA: " + detalleLuminarias.getString("marca") + "\n" +
-                                        "MODELO: " + detalleLuminarias.getString("modelo"));
+                                textViewDetallesLuminarias.setText("CANTIDAD: " + detalleLuminarias.getInt("cantidad") +
+                                        "\nTIPO: " + detalleLuminarias.getString("tipo_lampara") +
+                                        "\nMARCA: " + detalleLuminarias.getString("marca") +
+                                        "\nMODELO: " + detalleLuminarias.getString("modelo"));
 
-                                textViewDescripcion.setText("" + proyecto.getString("descripcion"));
+                                textViewDescripcion.setText(proyecto.getString("descripcion"));
 
                                 fotoRuta = proyecto.optString("foto", null);
                                 cargarFotoDesdeRuta(fotoRuta);
@@ -236,7 +234,7 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
                 },
                 error -> Toast.makeText(this, "Error al cargar detalles del proyecto.", Toast.LENGTH_SHORT).show());
 
-        Volley.newRequestQueue(this).add(request);
+        VolleySingleton.getInstance(this).addToRequestQueue(request);
     }
 
     private void cargarFotoDesdeRuta(String rutaRelativa) {
