@@ -13,9 +13,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -78,8 +76,6 @@ public class CatalogoFiscalizaciones extends AppCompatActivity {
     }
 
     private void cargarFiscalizaciones() {
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
         // Solicitar fiscalizaciones desde la API
         JsonObjectRequest fiscalizacionesRequest = new JsonObjectRequest(
                 Request.Method.GET,
@@ -103,12 +99,10 @@ public class CatalogoFiscalizaciones extends AppCompatActivity {
                 error -> Toast.makeText(this, "Error de conexión", Toast.LENGTH_SHORT).show()
         );
 
-        requestQueue.add(fiscalizacionesRequest);
+        VolleySingleton.getInstance(this).addToRequestQueue(fiscalizacionesRequest);
     }
 
     private void cargarDetallesProyecto(String fiscalizacionId, String proyectoId) {
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
         // Solicitar proyectos desde la API
         JsonObjectRequest proyectosRequest = new JsonObjectRequest(
                 Request.Method.GET,
@@ -152,7 +146,7 @@ public class CatalogoFiscalizaciones extends AppCompatActivity {
                 error -> Toast.makeText(this, "Error de conexión al cargar proyectos", Toast.LENGTH_SHORT).show()
         );
 
-        requestQueue.add(proyectosRequest);
+        VolleySingleton.getInstance(this).addToRequestQueue(proyectosRequest);
     }
 
     private void actualizarListView() {
