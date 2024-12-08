@@ -26,7 +26,7 @@ public class Dashboard extends AppCompatActivity {
     private static final String TAG = "DashboardActivity";
 
     TextView txtFecha, txtUsuario;
-    private LinearLayout containerUsuarios, containerSensores, containerRegistroMedicion;
+    private LinearLayout containerUsuarios, containerSensores, containerRegistroMedicion, containerSensores2;
     private final Handler mHandler = new Handler();
     private LinearLayout containerNavBarInicio, containerNavBarUser, containerNavBarSensor;
     private ImageView navBarGit, imglogo;
@@ -61,6 +61,7 @@ public class Dashboard extends AppCompatActivity {
         containerNavBarSensor = findViewById(R.id.containerNavBarSensor);
         containerNavBarInicio = findViewById(R.id.containerNavBarInicio);
         containerNavBarUser = findViewById(R.id.containerNavBarUser);
+        containerSensores2 = findViewById(R.id.containerSensores2);
 
         Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
         imglogo.startAnimation(rotateAnimation);
@@ -83,6 +84,11 @@ public class Dashboard extends AppCompatActivity {
             intent2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent2);
         });
+        containerSensores2.setOnClickListener(view -> {
+            Intent ventanaSensores2 = new Intent(Dashboard.this, CatalogoMedicionesSensores.class);
+            startActivity(ventanaSensores2);
+        });
+
 
         navBarGit.setOnClickListener(view -> {
             String url = "https://github.com/Anaguirv/appMovil";
@@ -101,12 +107,17 @@ public class Dashboard extends AppCompatActivity {
         mHandler.post(actualizarFechaRunnable);
 
         containerSensores = findViewById(R.id.containerSensores);
+        containerSensores2 = findViewById(R.id.containerSensores2);
         containerUsuarios = findViewById(R.id.containerUsuarios);
         containerRegistroMedicion = findViewById(R.id.containerRegistroMedicion);
 
         // Configurar escuchadores para los contenedores
         containerSensores.setOnClickListener(view -> {
             Intent ventanaSensores = new Intent(Dashboard.this, MonitoreoSensores.class);
+            startActivity(ventanaSensores);
+        });
+        containerSensores2.setOnClickListener(view -> {
+            Intent ventanaSensores = new Intent(Dashboard.this, CatalogoMedicionesSensores.class);
             startActivity(ventanaSensores);
         });
 

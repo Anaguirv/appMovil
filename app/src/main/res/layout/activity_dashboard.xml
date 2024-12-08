@@ -114,10 +114,11 @@
         android:id="@+id/containerUsuarios"
         android:layout_width="290dp"
         android:layout_height="68dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="12dp"
         android:gravity="start|center_vertical"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_fecha">
 
@@ -141,10 +142,11 @@
         android:id="@+id/containerSensores"
         android:layout_width="290dp"
         android:layout_height="68dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:gravity="start|center_vertical"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/containerUsuarios">
 
@@ -165,15 +167,44 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/containerRegistroMedicion"
+        android:id="@+id/containerSensores2"
         android:layout_width="290dp"
         android:layout_height="68dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="100dp"
         android:gravity="start|center_vertical"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/containerSensores">
+        app:layout_constraintTop_toBottomOf="@+id/containerUsuarios">
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="66dp"
+            android:layout_height="63dp"
+            app:srcCompat="@drawable/sensor" />
+
+        <TextView
+            android:id="@+id/txtMedicionesSensores2"
+            android:layout_width="201dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Mediciones Sensores"
+            android:textColor="#333"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/containerRegistroMedicion"
+        android:layout_width="290dp"
+        android:layout_height="68dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="start|center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/navBarBottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.528"
+        app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
             android:id="@+id/imageView3"
