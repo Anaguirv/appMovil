@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.ProgressDialog;
+
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -70,6 +72,8 @@ public class Medicion extends AppCompatActivity {
     private MapHandler mapHandler;
     private Bitmap capturedImage;
     private Uri imageUri;
+    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,6 +222,7 @@ public class Medicion extends AppCompatActivity {
             return;
         }
 
+
         String latitud = String.valueOf(selectedLocation.latitude);
         String longitud = String.valueOf(selectedLocation.longitude);
 
@@ -235,6 +240,11 @@ public class Medicion extends AppCompatActivity {
 
         Log.d(TAG, "Preparando datos para enviar al servidor");
         uploadMedicionWithPhoto(latitud, longitud, temperatura, humedad, valorMedido, observacion, instrumentoId, fiscalizacion_id);
+        // Muestra el ProgressDialog
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Guardando medición...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
     }
 
     private void uploadMedicionWithPhoto(String latitud, String longitud, String temperatura, String humedad,
@@ -268,8 +278,10 @@ public class Medicion extends AppCompatActivity {
                     }
                 },
                 error -> {
-                    Log.e(TAG, "Error en la solicitud al servidor", error);
+                    // Cierra el ProgressDialog en caso de error
+                    if (progressDialog.isShowing()) progressDialog.dismiss();
                     Toast.makeText(Medicion.this, "Error al guardar la medición", Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "Error en la solicitud", error);
                 }) {
 
             @Override

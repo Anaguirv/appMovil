@@ -155,7 +155,6 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
                     try {
                         JSONObject jsonResponse = new JSONObject(new String(response.data));
                         fotoRuta = jsonResponse.getString("foto_url");
-                        cargarFotoDesdeRuta(fotoRuta);
                         Toast.makeText(this, "Foto guardada correctamente.", Toast.LENGTH_SHORT).show();
                         buttonTomarFoto.setText("Tomar Foto");
                     } catch (JSONException e) {
@@ -184,7 +183,7 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
     }
 
     private void eliminarFoto() {
-        imageViewFoto.setImageResource(0);
+        imageViewFoto.setImageResource(R.drawable.ic_error);
         buttonEliminarFoto.setVisibility(View.GONE);
         buttonTomarFoto.setText("Tomar Foto");
         fotoCapturada = null;

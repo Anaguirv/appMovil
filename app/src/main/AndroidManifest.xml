@@ -18,6 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Login"
         android:usesCleartextTraffic="true"
+
         tools:targetApi="31">
         <activity
             android:name=".CatalogoFiscalizaciones"
@@ -36,7 +37,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB2aBXfnCllqnDMRWuYNiPl6Eua_x7aCRo" /> <!-- Declaración de actividades -->
         <activity
-            android:name=".MainActivity"
+            android:name=".Splash"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,7 +47,9 @@
         </activity>
         <activity
             android:name=".Medicion"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".RegistroUsuario"
             android:exported="false" />
@@ -82,7 +85,7 @@
             android:name=".Dashboard"
             android:exported="false" />
         <activity
-            android:name=".Splash"
+            android:name=".MainActivity"
             android:exported="true" />
     </application>
 
