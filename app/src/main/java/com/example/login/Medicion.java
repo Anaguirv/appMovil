@@ -246,9 +246,18 @@ public class Medicion extends AppCompatActivity {
                     try {
                         JSONObject jsonResponse = new JSONObject(new String(response.data));
                         Log.d(TAG, "Respuesta del servidor: " + jsonResponse.toString());
+
                         if (jsonResponse.optString("mensaje").equals("Medición guardada exitosamente")) {
                             Toast.makeText(Medicion.this, "Medición guardada exitosamente", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(Medicion.this, RegistroMedicion.class));
+
+                            // Crear el Intent para ir a RegistroMedicion
+                            Intent intent = new Intent(Medicion.this, RegistroMedicion.class);
+
+                            // Pasar fiscalizacion_id y proyecto_id
+                            intent.putExtra("fiscalizacion_id", fiscalizacion_id);
+                            intent.putExtra("proyecto_id", proyectoId);  // Asegúrate de tener este valor disponible
+
+                            startActivity(intent);
                             finish();
                         } else {
                             Log.e(TAG, "Error en la respuesta del servidor: " + jsonResponse.optString("error"));
