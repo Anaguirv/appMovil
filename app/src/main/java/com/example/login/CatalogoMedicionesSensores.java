@@ -16,7 +16,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class CatalogoMedicionesSensores extends AppCompatActivity {
 
@@ -60,9 +64,11 @@ public class CatalogoMedicionesSensores extends AppCompatActivity {
                                 String creado = medicion.getString("creado");
                                 int sensorId = medicion.getInt("sensor_id");
 
+                                String fechaHoraFormateada = formatearFechaHora(creado);
+
                                 String infoMedicion = String.format(
-                                        "ID: %d\nTemp: %.1f°C\nHum: %.1f%%\nLuminancia: %.1f\nIluminancia: %.1f\nFecha: %s\nSensor ID: %d",
-                                        id, temperatura, humedad, luminancia, iluminancia, creado, sensorId
+                                        "ID: %d\nTemp: %.1f°C\nHum: %.1f%%\nLuminancia: %.1f\nIluminancia: %.1f\n%s\nSensor ID: %d",
+                                        id, temperatura, humedad, luminancia, iluminancia, fechaHoraFormateada, sensorId
                                 );
 
                                 listaMediciones.add(infoMedicion);
@@ -83,5 +89,30 @@ public class CatalogoMedicionesSensores extends AppCompatActivity {
         );
 
         VolleySingleton.getInstance(this).addToRequestQueue(request);
+    }
+
+    private String formatearFechaHora(String fechaHora) {
+        try {
+            // Formato original de la fecha
+            SimpleDateFormat formatoEntrada = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+
+            // Fecha convertida
+            Date fecha = formatoEntrada.parse(fechaHora);
+
+            // Formato de salida para la fecha
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("MMMM yyyy dd", Locale.getDefault());
+
+            // Formato de salida para la hora
+            SimpleDateFormat formatoHora = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+
+            String fechaFormateada = formatoFecha.format(fecha);
+            String horaFormateada = formatoHora.format(fecha);
+
+            return "Fecha: " + fechaFormateada + "\nHora: " + horaFormateada;
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "Fecha inválida";
+        }
     }
 }

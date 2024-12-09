@@ -18,6 +18,8 @@
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:title="Nueva Medicion"
+        app:titleTextColor="@android:color/white"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- ScrollView que envuelve el contenido para desplazamiento -->

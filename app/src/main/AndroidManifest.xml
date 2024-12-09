@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 
     <application
         android:allowBackup="true"
@@ -19,6 +21,9 @@
         android:theme="@style/Theme.Login"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".CatalogoMedicionesProyecto"
+            android:exported="false" />
         <activity
             android:name=".CatalogoMedicionesSensores"
             android:exported="false" />
@@ -52,16 +57,19 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".RegistroUsuario"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".DashboardUsuario"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".EditarUsuario"
             android:exported="false" />
         <activity
             android:name=".RegistroMedicion"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".ModificarRegistro"
             android:exported="false" />
@@ -85,7 +93,8 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:launchMode="singleTask"/>
     </application>
 
 </manifest>

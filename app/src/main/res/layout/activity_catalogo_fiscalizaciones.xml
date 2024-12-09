@@ -21,6 +21,22 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Lista de Fiscalizaciones -->
+    <TextView
+        android:id="@+id/textViewCatalogoFiscalizaciones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="88dp"
+        android:layout_marginTop="4dp"
+        android:padding="16dp"
+        android:text="Catálogo Fiscalizaciones"
+        android:textColor="@color/ic_launcher_background"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/navBarTopMediciones"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ListView
         android:id="@+id/listViewFiscalizaciones"
         android:layout_width="0dp"

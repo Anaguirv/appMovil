@@ -1,4 +1,11 @@
 package com.example.login;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.core.app.ActivityCompat;
+import android.app.AlertDialog;
+import android.view.LayoutInflater;
+import android.widget.ProgressBar;
+import android.app.ProgressDialog;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,9 +16,19 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Log;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+import java.io.File;
+import java.io.IOException;
+
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import android.net.Uri;
+
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -35,7 +52,7 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
 
     // Componentes de la interfaz
     private TextView textViewNombreProyecto, textViewTipoAlumbrado, textViewRepresentanteLegal, textViewTitular, textViewDescripcion, textViewDetallesLuminarias;
-    private Button buttonTomarFoto, buttonEliminarFoto, buttonAgregarMedicion;
+    private Button buttonTomarFoto, buttonEliminarFoto, buttonAgregarMedicion,buttonVerMediciones;
     private ImageView imageViewFoto;
 
     // Variables de lógica de negocio
@@ -45,9 +62,13 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
     private double latitud, longitud;
     private GoogleMap googleMap;
     private Bitmap fotoCapturada;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private Uri imageUri;
+    private Bitmap capturedImage;
+    private ProgressDialog progressDialog;
+
 
     // Constantes
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final String URL_BASE = "http://98.83.4.206/";
     private static final String URL_PROYECTO = URL_BASE + "Api_Proyectos";
     private static final String URL_GUARDAR_FOTO = URL_BASE + "Guardar_foto_proyecto";
@@ -67,6 +88,8 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
         buttonTomarFoto = findViewById(R.id.buttonTomarFoto);
         buttonEliminarFoto = findViewById(R.id.buttonEliminarFoto);
         buttonAgregarMedicion = findViewById(R.id.buttonAgregarMedicion);
+        buttonVerMediciones = findViewById(R.id.buttonVerMediciones);
+
         imageViewFoto = findViewById(R.id.imageViewFoto);
 
         // Ocultar el botón "Eliminar Foto" inicialmente
@@ -75,6 +98,9 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
         // Obtener IDs necesarios desde el Intent
         fiscalizacionId = getIntent().getStringExtra("fiscalizacion_id");
         proyectoId = getIntent().getStringExtra("proyecto_id");
+
+        // Registrar el valor recibido en Logcat
+        Log.d("RegistroMedicion", "proyectoId recibido: " + proyectoId);
 
         if (fiscalizacionId == null || proyectoId == null) {
             Toast.makeText(this, "Faltan datos necesarios para continuar.", Toast.LENGTH_SHORT).show();
@@ -104,12 +130,26 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
         buttonEliminarFoto.setOnClickListener(v -> eliminarFoto());
 
         buttonAgregarMedicion.setOnClickListener(v -> abrirMedicion());
+
+        // Configurar botón Ver Mediciones
+        buttonVerMediciones.setOnClickListener(v -> abrirMedicionesProyecto());
     }
+
 
     @Override
     public void onMapReady(GoogleMap map) {
         googleMap = map;
     }
+    private void checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            }, 100);
+        }
+    }
+
 
     private void abrirMedicion() {
         Intent intent = new Intent(RegistroMedicion.this, Medicion.class);
@@ -119,12 +159,50 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
         startActivity(intent);
     }
 
+
+    private void abrirMedicionesProyecto() {
+        if (proyectoId != null && !proyectoId.isEmpty()) {
+            try {
+                int idProyecto = Integer.parseInt(proyectoId);
+                Log.d("RegistroMedicion", "Enviando ID del Proyecto: " + idProyecto);
+
+                Intent intent = new Intent(RegistroMedicion.this, CatalogoMedicionesProyecto.class);
+                intent.putExtra("proyectoId", String.valueOf(idProyecto));  // Envía como String
+                startActivity(intent);
+            } catch (NumberFormatException e) {
+                Log.e("RegistroMedicion", "Error: No se pudo convertir proyectoId a entero.");
+                Toast.makeText(this, "ID de proyecto inválido.", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Log.e("RegistroMedicion", "Error: proyectoId es nulo o vacío.");
+            Toast.makeText(this, "ID de proyecto no disponible.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
+
     private void tomarFoto() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        } else {
-            Toast.makeText(this, "No se puede acceder a la cámara", Toast.LENGTH_SHORT).show();
+            try {
+                File photoFile = File.createTempFile(
+                        "captured_image",  // Nombre del archivo
+                        ".jpg",            // Extensión
+                        getCacheDir()      // Directorio temporal
+                );
+
+                // Obtener URI del archivo temporal
+                imageUri = FileProvider.getUriForFile(
+                        this, getApplicationContext().getPackageName() + ".provider", photoFile);
+
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error al crear archivo de imagen", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -132,19 +210,35 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null && data.getExtras() != null) {
-            fotoCapturada = (Bitmap) data.getExtras().get("data");
-            imageViewFoto.setImageBitmap(fotoCapturada);
-            buttonEliminarFoto.setVisibility(View.VISIBLE);
-            buttonTomarFoto.setText("Guardar Foto");
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            try {
+                fotoCapturada = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                imageViewFoto.setImageBitmap(fotoCapturada);
+                buttonEliminarFoto.setVisibility(View.VISIBLE);
+                buttonTomarFoto.setText("Guardar Foto");
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error al cargar la imagen", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, "No se tomó ninguna foto", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+
 
     private void guardarFoto() {
         if (fotoCapturada == null) {
             Toast.makeText(this, "Debe tomar una foto antes de guardar.", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        // Muestra el ProgressDialog
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Guardando foto...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         fotoCapturada.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -155,13 +249,22 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
                     try {
                         JSONObject jsonResponse = new JSONObject(new String(response.data));
                         fotoRuta = jsonResponse.getString("foto_url");
+
+                        // Ocultar el ProgressDialog
+                        if (progressDialog.isShowing()) progressDialog.dismiss();
+
                         Toast.makeText(this, "Foto guardada correctamente.", Toast.LENGTH_SHORT).show();
                         buttonTomarFoto.setText("Tomar Foto");
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        if (progressDialog.isShowing()) progressDialog.dismiss();
                     }
                 },
-                error -> Toast.makeText(this, "Error al guardar la foto.", Toast.LENGTH_SHORT).show()) {
+                error -> {
+                    if (progressDialog.isShowing()) progressDialog.dismiss();
+                    Toast.makeText(this, "Error al guardar la foto.", Toast.LENGTH_SHORT).show();
+                }) {
+
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
@@ -177,13 +280,12 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
             }
         };
 
-// Usar el Singleton para la cola
         VolleySingleton.getInstance(this).addToRequestQueue(request);
-
     }
 
+
     private void eliminarFoto() {
-        imageViewFoto.setImageResource(R.drawable.ic_error);
+        imageViewFoto.setImageResource(0);
         buttonEliminarFoto.setVisibility(View.GONE);
         buttonTomarFoto.setText("Tomar Foto");
         fotoCapturada = null;

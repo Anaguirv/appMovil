@@ -52,6 +52,8 @@ dependencies {
 
     implementation ("com.google.android.gms:play-services-maps:18.0.2")// Dependencia para Google Maps
     implementation ("com.google.android.gms:play-services-location:21.0.1")// Dependencia para ubicación
+    implementation ("androidx.core:core-ktx:1.9.0")
+
 
     // Glide para carga de imágenes
     implementation("com.github.bumptech.glide:glide:4.15.1")

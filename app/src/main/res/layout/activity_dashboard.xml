@@ -198,13 +198,13 @@
         android:id="@+id/containerRegistroMedicion"
         android:layout_width="290dp"
         android:layout_height="68dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
         android:gravity="start|center_vertical"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/navBarBottom"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.528"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/containerSensores2">
 
         <ImageView
             android:id="@+id/imageView3"
