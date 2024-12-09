@@ -58,6 +58,8 @@ public class Medicion extends AppCompatActivity {
     private Spinner spinnerInstrumento;
     private ImageView imageView1;
     private Button btnTomarFoto;
+    private Spinner spinnerTipo;
+
 
     private RequestQueue requestQueue;
     private String urlInstrumentos = "http://98.83.4.206/Api_instrumentos_medicion";
@@ -78,6 +80,17 @@ public class Medicion extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medicion);
+        // Inicializa el Spinner
+        spinnerTipo = findViewById(R.id.spinnerTipo);
+
+        // Configura el adaptador del Spinner
+        ArrayAdapter<String> tipoAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                new String[]{"Seleccione un tipo", "Iluminancia", "Luminancia"}
+        );
+        tipoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTipo.setAdapter(tipoAdapter);
 
         Log.d(TAG, "onCreate: Iniciando componentes de la UI");
 
@@ -115,6 +128,14 @@ public class Medicion extends AppCompatActivity {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapContainer);
         mapHandler = new MapHandler(this, mapFragment);
     }
+    private String getSelectedTipoMedicion() {
+        int position = spinnerTipo.getSelectedItemPosition();
+        if (position == 1) return "0";  // Iluminancia
+        if (position == 2) return "1";  // Luminancia
+        return "";  // No seleccionado
+    }
+
+
 
     private void checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
@@ -294,9 +315,19 @@ public class Medicion extends AppCompatActivity {
                 params.put("observacion", observacion);
                 params.put("instrumento_medicion_id", instrumentoId);
                 params.put("fiscalizacion_id", proyectoId);
-                params.put("tipo", "m"); // Tipo predeterminado
+
+                // Validar y agregar tipo de medición
+                String tipoMedicion = getSelectedTipoMedicion();
+                if (tipoMedicion.isEmpty()) {
+                    Toast.makeText(Medicion.this, "Seleccione un tipo de medición", Toast.LENGTH_SHORT).show();
+                    return null;
+                }
+                params.put("tipo", tipoMedicion);
+
                 return params;
             }
+
+
 
             @Override
             protected Map<String, DataPart> getByteData() {
