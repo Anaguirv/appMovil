@@ -8,64 +8,201 @@
     android:layout_height="match_parent"
     tools:context=".RegistroMedicion">
 
-  <TextView
-      android:id="@+id/titulo_reg_med"
-      android:layout_width="wrap_content"
+  <!-- Barra superior de navegación con título -->
+  <com.google.android.material.appbar.MaterialToolbar
+      android:id="@+id/navBarTop"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="16dp"
-      android:text="@string/seleccionar_alumbrado"
-      android:textSize="24sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.494"
+      android:background="@color/fondoMenu"
+      android:minHeight="?attr/actionBarSize"
+      android:theme="?attr/actionBarTheme"
+      app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintEnd_toEndOf="parent"
+      app:title="Detalles del Proyecto"
+      app:titleTextColor="@android:color/white" />
 
-  <TextView
-      android:id="@+id/tipo_alumbrado_art5"
-      android:layout_width="wrap_content"
+  <!-- Contenedor para los detalles del proyecto -->
+  <ScrollView
+      android:id="@+id/scrollViewDetalles"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintTop_toBottomOf="@id/navBarTop"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintBottom_toTopOf="@id/navBarBottom">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+      <TableLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:stretchColumns="1"
+          android:padding="16dp">
+
+        <!-- Fila: Nombre del proyecto -->
+        <TableRow>
+          <TextView
+              android:text="Nombre del Proyecto:"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textStyle="bold"
+              android:paddingEnd="8dp" />
+          <TextView
+              android:id="@+id/textViewNombreProyecto"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Faro" />
+        </TableRow>
+
+        <!-- Fila: Tipo de alumbrado -->
+        <TableRow>
+          <TextView
+              android:text="Tipo de Alumbrado:"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textStyle="bold"
+              android:paddingEnd="8dp" />
+          <TextView
+              android:id="@+id/textViewTipoAlumbrado"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Público" />
+        </TableRow>
+
+        <!-- Fila: Representante Legal -->
+        <TableRow>
+          <TextView
+              android:text="Representante Legal:"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textStyle="bold"
+              android:paddingEnd="8dp" />
+          <TextView
+              android:id="@+id/textViewRepresentanteLegal"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Christian Galindez" />
+        </TableRow>
+
+        <!-- Fila: Titular -->
+        <TableRow>
+          <TextView
+              android:text="Titular:"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textStyle="bold"
+              android:paddingEnd="8dp" />
+          <TextView
+              android:id="@+id/textViewTitular"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Titu TT" />
+        </TableRow>
+
+        <!-- Fila: Descripción -->
+        <TableRow>
+          <TextView
+              android:text="Descripción:"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textStyle="bold"
+              android:paddingEnd="8dp" />
+          <TextView
+              android:id="@+id/textViewDescripcion"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Este proyecto es un alumbrado público cerca del faro." />
+        </TableRow>
+
+        <!-- Fila: Detalles de luminarias -->
+        <TableRow>
+          <TextView
+              android:text="Detalles Luminarias:"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textStyle="bold"
+              android:paddingEnd="8dp" />
+          <TextView
+              android:id="@+id/textViewDetallesLuminarias"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="LED, Marca: Philips, Modelo: X100" />
+        </TableRow>
+      </TableLayout>
+      <!-- Contenedor para el mapa -->
+      <fragment
+          android:id="@+id/mapContainer"
+          android:name="com.google.android.gms.maps.MapFragment"
+          android:layout_width="match_parent"
+          android:layout_height="200dp"
+          android:layout_marginTop="16dp" />
+
+      <!-- Botón para eliminar foto -->
+      <Button
+          android:id="@+id/buttonEliminarFoto"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="Eliminar Foto"
+          android:layout_marginTop="16dp"
+          android:backgroundTint="@color/black"
+          android:textColor="@android:color/white"
+/> <!-- Desactivado por defecto -->
+
+      <!-- Botón para tomar foto -->
+      <Button
+          android:id="@+id/buttonTomarFoto"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="Tomar Foto"
+          android:layout_marginTop="16dp" />
+
+      <!-- Contenedor de la foto tomada -->
+      <ImageView
+          android:id="@+id/imageViewFoto"
+          android:layout_width="match_parent"
+          android:layout_height="200dp"
+          android:layout_marginTop="16dp"
+          android:scaleType="centerCrop"
+          android:background="@android:color/darker_gray"
+          android:contentDescription="Vista previa de la foto tomada" />
+
+      <!-- Botón para agregar medición -->
+      <Button
+          android:id="@+id/buttonAgregarMedicion"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="Agregar Medición"
+          android:layout_marginTop="16dp"
+          android:textColor="@android:color/white" />
+      <!-- Botón para ver mediciones del proyecto -->
+      <Button
+          android:id="@+id/buttonVerMediciones"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="Ver Mediciones del Proyecto"
+          android:layout_marginTop="16dp"
+          android:backgroundTint="@color/black"
+          android:textColor="@android:color/white" />
+
+
+    </LinearLayout>
+  </ScrollView>
+
+  <!-- Barra inferior de navegación -->
+  <com.google.android.material.appbar.MaterialToolbar
+      android:id="@+id/navBarBottom"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="80dp"
-      android:text="@string/alumbrado_art5"
-      android:textSize="20sp"
+      android:background="@color/fondoMenu"
+      android:minHeight="?attr/actionBarSize"
+      android:theme="?attr/actionBarTheme"
+      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.496"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/titulo_reg_med" />
+      app:layout_constraintStart_toStartOf="parent" />
 
-
-  <TextView
-      android:id="@+id/tipo_alumbrado_art6"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="37dp"
-      android:text="@string/alumbrado_art6"
-      android:textSize="20sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.497"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/tipo_alumbrado_art5" />
-
-  <TextView
-      android:id="@+id/tipo_alumbrado_art7"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="37dp"
-      android:text="@string/alumbrado_art7"
-      android:textSize="20sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.497"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/tipo_alumbrado_art6" />
-
-  <TextView
-      android:id="@+id/tipo_alumbrado_art8"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="37dp"
-      android:text="@string/alumbrado_art8"
-      android:textSize="20sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.497"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/tipo_alumbrado_art7" />
 </androidx.constraintlayout.widget.ConstraintLayout>

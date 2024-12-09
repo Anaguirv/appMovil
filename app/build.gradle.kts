@@ -48,8 +48,19 @@ dependencies {
     implementation("com.android.volley:volley:1.2.1")
     implementation("com.sun.mail:android-mail:1.6.7")
     implementation("com.sun.mail:android-activation:1.6.7")
+    implementation ("com.google.android.gms:play-services-maps:18.0.2") // Asegúrate de tener la versión más reciente
+
+    implementation ("com.google.android.gms:play-services-maps:18.0.2")// Dependencia para Google Maps
+    implementation ("com.google.android.gms:play-services-location:21.0.1")// Dependencia para ubicación
+    implementation ("androidx.core:core-ktx:1.9.0")
+
+
+    // Glide para carga de imágenes
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
 }
