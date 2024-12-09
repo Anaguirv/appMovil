@@ -164,11 +164,17 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
         if (proyectoId != null && !proyectoId.isEmpty()) {
             try {
                 int idProyecto = Integer.parseInt(proyectoId);
+                String nombreProyecto = textViewNombreProyecto.getText().toString();
+
+                // Verifica si los datos se están configurando correctamente
                 Log.d("RegistroMedicion", "Enviando ID del Proyecto: " + idProyecto);
+                Log.d("RegistroMedicion", "Enviando Nombre del Proyecto: " + nombreProyecto);
 
                 Intent intent = new Intent(RegistroMedicion.this, CatalogoMedicionesProyecto.class);
                 intent.putExtra("proyectoId", String.valueOf(idProyecto));  // Envía como String
+                intent.putExtra("proyecto_nombre", nombreProyecto);  // Envía el nombre del proyecto
                 startActivity(intent);
+
             } catch (NumberFormatException e) {
                 Log.e("RegistroMedicion", "Error: No se pudo convertir proyectoId a entero.");
                 Toast.makeText(this, "ID de proyecto inválido.", Toast.LENGTH_SHORT).show();
@@ -178,6 +184,7 @@ public class RegistroMedicion extends AppCompatActivity implements OnMapReadyCal
             Toast.makeText(this, "ID de proyecto no disponible.", Toast.LENGTH_SHORT).show();
         }
     }
+
 
 
 

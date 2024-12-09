@@ -1,11 +1,12 @@
 package com.example.login;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -13,26 +14,24 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-
 
 public class CatalogoMedicionesProyecto extends AppCompatActivity {
 
     private ListView listViewMedicionesProyecto;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> listaMediciones;
+    private ArrayList<Integer> listaIdsMediciones;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +47,7 @@ public class CatalogoMedicionesProyecto extends AppCompatActivity {
 
         listViewMedicionesProyecto = findViewById(R.id.listViewMedicionesProyecto);
         listaMediciones = new ArrayList<>();
+        listaIdsMediciones = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listaMediciones);
         listViewMedicionesProyecto.setAdapter(adapter);
 
@@ -58,9 +58,10 @@ public class CatalogoMedicionesProyecto extends AppCompatActivity {
             try {
                 int proyectoId = Integer.parseInt(proyectoIdStr);
                 Log.d("CatalogoMediciones", "ID del Proyecto Recibido: " + proyectoId);
-
-                // Cargar mediciones si el ID es válido
                 cargarMediciones(proyectoId);
+
+                // Configurar clic en ListView
+                configurarClickEnMedicion();
 
             } catch (NumberFormatException e) {
                 Log.e("CatalogoMediciones", "Error: No se puede convertir proyectoId a entero.");
@@ -72,12 +73,22 @@ public class CatalogoMedicionesProyecto extends AppCompatActivity {
         }
     }
 
+    private void configurarClickEnMedicion() {
+        listViewMedicionesProyecto.setOnItemClickListener((parent, view, position, id) -> {
+            int medicionId = listaIdsMediciones.get(position);
+
+            // Crear Intent para abrir EditarMedicion
+            Intent intent = new Intent(CatalogoMedicionesProyecto.this, EditarMedicion.class);
+            intent.putExtra("medicionId", medicionId);  // Pasar el ID de la medición
+            startActivity(intent);
+
+            Log.d("CatalogoMediciones", "Medición seleccionada: ID " + medicionId);
+        });
+    }
+
     private String formatearFecha(String fechaOriginal) {
         try {
-            // Formato original recibido del servidor
             SimpleDateFormat formatoEntrada = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
-
-            // Formato deseado para mostrar (día/mes/año y hora)
             SimpleDateFormat formatoSalida = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
             Date fecha = formatoEntrada.parse(fechaOriginal);
@@ -98,36 +109,35 @@ public class CatalogoMedicionesProyecto extends AppCompatActivity {
                     try {
                         JSONArray mediciones = response.getJSONArray("mediciones");
                         listaMediciones.clear();
+                        listaIdsMediciones.clear();
 
                         for (int i = 0; i < mediciones.length(); i++) {
                             JSONObject medicion = mediciones.getJSONObject(i);
 
-                            // Extraer campos relevantes
                             int idMedicion = medicion.getInt("id");
                             int idFiscalizacion = medicion.getInt("fiscalizacion_id");
                             String fechaCreada = medicion.getString("creado");
 
-                            // Formatear la fecha
                             String fechaFormateada = formatearFecha(fechaCreada);
 
-                            // Crear el elemento para mostrar
                             String item = "ID Medición: " + idMedicion +
                                     "\nID Fiscalización: " + idFiscalizacion +
                                     "\nFecha y Hora: " + fechaFormateada;
 
                             listaMediciones.add(item);
+                            listaIdsMediciones.add(idMedicion);
                         }
 
                         adapter.notifyDataSetChanged();
 
                     } catch (JSONException e) {
                         Log.e("CatalogoMediciones", "Error procesando datos", e);
-                        Toast.makeText(CatalogoMedicionesProyecto.this, "Error procesando datos", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Error procesando datos", Toast.LENGTH_SHORT).show();
                     }
                 },
                 error -> {
                     Log.e("CatalogoMediciones", "Error al cargar datos: " + error.getMessage());
-                    Toast.makeText(CatalogoMedicionesProyecto.this, "Error al cargar datos", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error al cargar datos", Toast.LENGTH_SHORT).show();
                 }
         );
 

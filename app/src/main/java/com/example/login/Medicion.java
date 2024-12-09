@@ -227,7 +227,6 @@ public class Medicion extends AppCompatActivity {
     }
 
     private void guardarMedicion() {
-        Log.d(TAG, "Iniciando la función guardarMedicion");
 
         String instrumentoId = getSelectedInstrumentId();
         String temperatura = editTextTemperatura.getText().toString();
@@ -237,28 +236,22 @@ public class Medicion extends AppCompatActivity {
 
         selectedLocation = mapHandler.getSelectedLocation();
         if (selectedLocation == null) {
-            Log.e(TAG, "Ubicación no seleccionada en el mapa");
             Toast.makeText(this, "Seleccione una ubicación en el mapa", Toast.LENGTH_SHORT).show();
             return;
         }
-
 
         String latitud = String.valueOf(selectedLocation.latitude);
         String longitud = String.valueOf(selectedLocation.longitude);
 
         if (instrumentoId == null || fiscalizacion_id == null || inspectorId == -1) {
-            Log.e(TAG, "Faltan campos requeridos");
             Toast.makeText(this, "Complete todos los campos y tome una foto", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (capturedImage == null) {
-            Log.e(TAG, "No se tomó ninguna foto");
             Toast.makeText(this, "Debe tomar una foto antes de guardar", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        Log.d(TAG, "Preparando datos para enviar al servidor");
         uploadMedicionWithPhoto(latitud, longitud, temperatura, humedad, valorMedido, observacion, instrumentoId, fiscalizacion_id);
         // Muestra el ProgressDialog
         progressDialog = new ProgressDialog(this);
@@ -270,12 +263,10 @@ public class Medicion extends AppCompatActivity {
     private void uploadMedicionWithPhoto(String latitud, String longitud, String temperatura, String humedad,
                                          String valorMedido, String observacion, String instrumentoId, String proyectoId) {
 
-        Log.d(TAG, "Iniciando solicitud al servidor");
         VolleyMultipartRequest request = new VolleyMultipartRequest(Request.Method.POST, urlGuardarMedicion,
                 response -> {
                     try {
                         JSONObject jsonResponse = new JSONObject(new String(response.data));
-                        Log.d(TAG, "Respuesta del servidor: " + jsonResponse.toString());
 
                         if (jsonResponse.optString("mensaje").equals("Medición guardada exitosamente")) {
                             Toast.makeText(Medicion.this, "Medición guardada exitosamente", Toast.LENGTH_SHORT).show();
@@ -290,18 +281,15 @@ public class Medicion extends AppCompatActivity {
                             startActivity(intent);
                             finish();
                         } else {
-                            Log.e(TAG, "Error en la respuesta del servidor: " + jsonResponse.optString("error"));
                             Toast.makeText(Medicion.this, "Error al guardar la medición: " + jsonResponse.optString("error"), Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
-                        Log.e(TAG, "Error al procesar la respuesta del servidor", e);
                     }
                 },
                 error -> {
                     // Cierra el ProgressDialog en caso de error
                     if (progressDialog.isShowing()) progressDialog.dismiss();
                     Toast.makeText(Medicion.this, "Error al guardar la medición", Toast.LENGTH_LONG).show();
-                    Log.e(TAG, "Error en la solicitud", error);
                 }) {
 
             @Override
@@ -327,8 +315,6 @@ public class Medicion extends AppCompatActivity {
                 return params;
             }
 
-
-
             @Override
             protected Map<String, DataPart> getByteData() {
                 Map<String, DataPart> params = new HashMap<>();
@@ -339,8 +325,6 @@ public class Medicion extends AppCompatActivity {
                 return params;
             }
         };
-
-        Log.d(TAG, "Enviando solicitud al servidor");
         requestQueue.add(request);
     }
 }
