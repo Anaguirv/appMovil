@@ -158,10 +158,10 @@
 
         <TextView
             android:id="@+id/txtSensores"
-            android:layout_width="201dp"
+            android:layout_width="234dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Mostrar Sensores"
+            android:text="Mostrar Sensores PNK"
             android:textColor="#333"
             android:textSize="20sp" />
     </LinearLayout>
@@ -189,7 +189,7 @@
             android:layout_width="201dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Mediciones Sensores"
+            android:text="Mediciones Drones"
             android:textColor="#333"
             android:textSize="20sp" />
     </LinearLayout>
@@ -198,11 +198,11 @@
         android:id="@+id/containerRegistroMedicion"
         android:layout_width="290dp"
         android:layout_height="68dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:gravity="start|center_vertical"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.528"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/containerSensores2">
 
