@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/medicion"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Medicion">
+
+    <!-- Barra superior de navegación -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/navBArTop"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:background="@color/fondoMenu"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:title="Nueva Medicion"
+        app:titleTextColor="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- ScrollView que envuelve el contenido para desplazamiento -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/navBArTop"
+        app:layout_constraintBottom_toTopOf="@id/navBarBottom"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Campo Proyecto -->
+            <TextView
+                android:id="@+id/textViewProyecto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Proyecto" />
+
+            <TextView
+                android:id="@+id/textProyectoValor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Valor del Proyecto"
+                android:hint="Proyecto desde RegistroMedicion" />
+
+            <!-- Nuevo Spinner para Proyecto -->
+            <Spinner
+                android:id="@+id/spinnerTipo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:spinnerMode="dropdown" />
+
+            <!-- Campo Instrumento de Medición -->
+            <TextView
+                android:id="@+id/textViewInstrumento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Instrumento de Medición" />
+
+            <Spinner
+                android:id="@+id/spinnerInstrumento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:prompt="@string/spinner_prompt" />
+
+            <!-- Sección para Temperatura -->
+            <TextView
+                android:id="@+id/textViewTemperatura"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Temperatura" />
+
+            <EditText
+                android:id="@+id/editTextTemperatura"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ingrese Valor"
+                android:inputType="numberDecimal" />
+
+            <!-- Sección para Humedad -->
+            <TextView
+                android:id="@+id/textViewHumedad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Humedad" />
+
+            <EditText
+                android:id="@+id/editTextHumedad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ingrese Valor"
+                android:inputType="numberDecimal" />
+
+            <!-- Campo de Medición -->
+            <TextView
+                android:id="@+id/medicion_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Medición" />
+
+            <EditText
+                android:id="@+id/medicion_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ingrese la medición"
+                android:inputType="numberDecimal" />
+
+            <!-- Botón de tomar foto centrado debajo del último valor -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="16dp">
+
+                <Button
+                    android:id="@+id/btnTomarFoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tomar Foto" />
+            </LinearLayout>
+
+            <!-- Contenedor para mostrar las imágenes y los botones de eliminar -->
+            <LinearLayout
+                android:id="@+id/photosContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <!-- Sección del mapa -->
+            <TextView
+                android:id="@+id/textViewUbicacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Ubicación" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/mapContainer"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_marginTop="8dp" />
+
+            <!-- Campo de Observaciones -->
+            <TextView
+                android:id="@+id/textViewObservaciones"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Observaciones" />
+
+            <EditText
+                android:id="@+id/editTextObservaciones"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ingrese Observación"
+                android:inputType="text" />
+
+            <!-- Botón de Guardar centrado debajo de Observaciones -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="16dp">
+
+                <Button
+                    android:id="@+id/btnguardarmedicion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Guardar" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Barra inferior de navegación -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/navBarBottom"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:background="@color/fondoMenu"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

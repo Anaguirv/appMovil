@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <!-- Permisos -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -17,30 +21,57 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".RegistroUsuario"
+            android:name=".EditarMedicion"
             android:exported="false" />
         <activity
-            android:name=".DashboardUsuario"
+            android:name=".CatalogoMedicionesProyecto"
             android:exported="false" />
+        <activity
+            android:name=".CatalogoMedicionesSensores"
+            android:exported="false" />
+        <activity
+            android:name=".CatalogoFiscalizaciones"
+            android:exported="false" /> <!-- Configuración del FileProvider -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider> <!-- Clave de API de Google Maps -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB2aBXfnCllqnDMRWuYNiPl6Eua_x7aCRo" /> <!-- Declaración de actividades -->
+        <activity
+            android:name=".Splash"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Medicion"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RegistroUsuario"
+            android:exported="false"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".DashboardUsuario"
+            android:exported="false"
+            android:launchMode="singleTask" />
         <activity
             android:name=".EditarUsuario"
             android:exported="false" />
         <activity
-            android:name=".TipoAlumbrado_art8"
-            android:exported="false" />
-        <activity
-            android:name=".TipoAlumbrado_art7"
-            android:exported="false" />
-        <activity
-            android:name=".TipoAlumbrado_art6"
-            android:exported="false" />
-        <activity
-            android:name=".TipoAlumbrado_art5"
-            android:exported="false"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
             android:name=".RegistroMedicion"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTask" />
         <activity
             android:name=".ModificarRegistro"
             android:exported="false" />
@@ -57,23 +88,15 @@
             android:name=".RecuperarClave"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
             android:name=".Registro"
             android:exported="false" />
         <activity
             android:name=".Dashboard"
             android:exported="false" />
         <activity
-            android:name=".Splash"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask" />
     </application>
 
 </manifest>

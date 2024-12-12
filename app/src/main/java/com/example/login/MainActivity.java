@@ -1,29 +1,37 @@
 package com.example.login;
 
+import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     private TextView txtmsj, txtregistro, txtolvide;
     private Button btningresar;
     private EditText txtuser, txtclave;
@@ -32,13 +40,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.dashboard), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         txtmsj = findViewById(R.id.txtmensaje);
         btningresar = findViewById(R.id.btningresar);
@@ -65,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
                     txtclave.setError("Este campo no puede estar vacío");
                     Toast.makeText(MainActivity.this, "Debe ingresar una contraseña", Toast.LENGTH_LONG).show();
                 } else {
-                    // Llamar al método para verificar usuario en la base de datos
                     verificarUsuario(usuario, clave);
                 }
             }
@@ -88,50 +89,73 @@ public class MainActivity extends AppCompatActivity {
         return matcher.matches();
     }
 
-    // Método para verificar usuario en la base de datos
     private void verificarUsuario(String usuario, String clave) {
-        String url = "http://52.71.115.13/consultarUsuario.php?correo=" + usuario + "&clave=" + clave;
-        new VerificarUsuarioTask(usuario).execute(url);
-    }
+        String url = "http://98.83.4.206/Login";
 
-    // Clase interna para manejar la solicitud en segundo plano
-    private class VerificarUsuarioTask extends AsyncTask<String, Void, String> {
-        private final String emailIngresado;
-
-        // Constructor para inicializar el email
-        public VerificarUsuarioTask(String emailIngresado) {
-            this.emailIngresado = emailIngresado;
+        JSONObject params = new JSONObject();
+        try {
+            params.put("username", usuario);
+            params.put("password", clave);
+        } catch (JSONException e) {
+            Log.e(TAG, "Error al construir los parámetros JSON", e);
+            Toast.makeText(MainActivity.this, "Error al construir los parámetros.", Toast.LENGTH_LONG).show();
+            return;
         }
 
-        @Override
-        protected String doInBackground(String... urls) {
-            StringBuilder result = new StringBuilder();
-            try {
-                URL url = new URL(urls[0]);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
+        // Registro del JSON y la URL en Logcat
+        Log.d(TAG, "URL: " + url);
+        Log.d(TAG, "JSON Enviado: " + params.toString());
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);
-                }
-                reader.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, params,
+                response -> {
+                    Log.d(TAG, "Respuesta del servidor: " + response.toString());
+                    try {
+                        if (response.has("id")) {
+                            int id = response.getInt("id");
+                            String username = response.getString("username");
+
+                            // Registrar en Logcat
+                            Log.d(TAG, "ID del usuario obtenido: " + id);
+                            Log.d(TAG, "Username del usuario obtenido: " + username);
+
+                            // Guardar el ID y el username en SharedPreferences
+                            SharedPreferences sharedPref = getSharedPreferences("InspectorPrefs", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putInt("inspector_id", id);
+                            editor.putString("username", username);
+                            editor.apply();
+
+                            // Pasar el ID y el username al siguiente Activity
+                            Intent ventanaDashboard = new Intent(MainActivity.this, Dashboard.class);
+                            ventanaDashboard.putExtra("username", username);
+                            ventanaDashboard.putExtra("id", id); // Pasar el ID
+                            startActivity(ventanaDashboard);
+                        } else {
+                            Toast.makeText(MainActivity.this, response.getString("error"), Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error procesando la respuesta JSON", e);
+                        Toast.makeText(MainActivity.this, "Error al procesar la respuesta del servidor.", Toast.LENGTH_LONG).show();
+                    }
+                },
+                error -> {
+                    Log.e(TAG, "Error en la solicitud Volley", error);
+                    if (error.networkResponse != null) {
+                        Log.e(TAG, "Código de estado: " + error.networkResponse.statusCode);
+                    }
+                    Toast.makeText(MainActivity.this, "Error de autenticación o comunicación.", Toast.LENGTH_LONG).show();
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                return headers;
             }
-            return result.toString();
-        }
+        };
 
-        @Override
-        protected void onPostExecute(String result) {
-            if (result.equals("Login exitoso. Usuario encontrado.")) {
-                Intent ventanaingresar = new Intent(MainActivity.this, Dashboard.class);
-                ventanaingresar.putExtra("correo", emailIngresado); // Agrega el correo al intent
-                startActivity(ventanaingresar);
-            } else {
-                Toast.makeText(MainActivity.this, "Usuario no registrado o datos incorrectos.", Toast.LENGTH_LONG).show();
-            }
-        }
+        jsonObjectRequest.setShouldCache(false);
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(jsonObjectRequest);
     }
 }
